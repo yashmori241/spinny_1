@@ -1,0 +1,172 @@
+'use client';
+
+import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { Shield, Award, Cpu } from 'lucide-react';
+
+export default function AboutPage() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray<HTMLElement>('.about-section').forEach((section) => {
+        gsap.from(section, {
+          opacity: 0, y: 40, duration: 0.8, ease: 'power2.out',
+          scrollTrigger: { trigger: section, start: 'top 80%', once: true },
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>('.stat-counter').forEach((el) => {
+        const target = parseInt(el.getAttribute('data-val') || '0');
+        gsap.fromTo(el, { textContent: 0 }, {
+          textContent: target, duration: 1.8, ease: 'power2.out', snap: { textContent: 1 },
+          scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+        });
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  const milestones = [
+    { year: '2015', title: 'Founded', desc: 'Spinny was born with a mission to make used car buying trustworthy and transparent.' },
+    { year: '2017', title: 'First Hub Launched', desc: 'Opened our first Spinny Hub in Gurugram with a collection of 200 quality-checked cars.' },
+    { year: '2019', title: '5 Cities', desc: 'Expanded across Delhi, Mumbai, Bangalore, Hyderabad, and Pune to reach more customers.' },
+    { year: '2021', title: 'Unicorn Status', desc: 'Became a unicorn startup with $283M in Series E funding, validating our customer-first model.' },
+    { year: '2023', title: '20+ Cities', desc: 'Now serving over 20 cities across India with 10,000+ cars available at any time.' },
+  ];
+
+  const cities = [
+    { name: 'Delhi NCR', x: 52, y: 22 },
+    { name: 'Jaipur', x: 44, y: 26 },
+    { name: 'Kolkata', x: 68, y: 35 },
+    { name: 'Mumbai', x: 35, y: 48 },
+    { name: 'Pune', x: 38, y: 52 },
+    { name: 'Hyderabad', x: 47, y: 55 },
+    { name: 'Bangalore', x: 42, y: 65 },
+    { name: 'Chennai', x: 50, y: 63 },
+  ];
+
+  return (
+    <div ref={sectionRef} className="min-h-screen bg-bg-primary relative overflow-hidden">
+      {/* Background Atmosphere */}
+      <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-brand-gold/[0.02] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      
+      {/* Hero */}
+      <div className="about-section py-32 text-center relative">
+        <div className="max-w-4xl mx-auto px-6 relative z-10">
+          <div className="flex items-center justify-center gap-6 mb-10 opacity-60">
+             <div className="w-12 h-[1px] bg-brand-gold/50" />
+             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">ABOUT SPINNY</p>
+             <div className="w-12 h-[1px] bg-brand-gold/50" />
+          </div>
+          <h1 className="text-display-lg mb-8 tracking-tighter leading-tight">
+            Redefining How India <br />
+            <span className="italic font-display gold-text-gradient">Buys Cars</span><span className="text-brand-gold">.</span>
+          </h1>
+          <p className="text-text-muted text-xl leading-relaxed font-body max-w-2xl mx-auto opacity-75">
+            Spinny is India&apos;s most trusted platform for certified pre-owned cars. 
+            We bring complete transparency, 200-point quality checks, and a hassle-free buying experience to every customer.
+          </p>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div className="about-section py-24 border-y border-white/5 bg-white/[0.01]">
+        <div className="max-w-[1400px] mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+          {[
+            { val: 200000, suffix: '+', label: 'Happy Customers' },
+            { val: 20, suffix: '+', label: 'Cities Covered' },
+            { val: 3000, suffix: '+', label: 'Team Members' },
+            { val: 200, suffix: '', label: 'Point Inspection' },
+          ].map((s) => (
+            <div key={s.label} className="glass-elite rounded-[28px] p-10 luxury-border group hover:bg-white/[0.03] transition-all duration-1000">
+              <p className="text-4xl font-display font-black gold-text-gradient mb-4 tracking-tighter">
+                <span className="stat-counter" data-val={s.val}>0</span>{s.suffix}
+              </p>
+              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-text-muted group-hover:text-brand-gold transition-colors duration-700">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="about-section py-32 border-b border-white/5">
+        <div className="max-w-5xl mx-auto px-6">
+           <div className="text-center mb-24">
+              <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-6">OUR JOURNEY</p>
+              <h2 className="text-display-md tracking-tighter leading-tight">A Legacy of <span className="italic font-display text-brand-gold">Trust</span>.</h2>
+           </div>
+          <div className="space-y-20 relative">
+            <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-[1px] bg-brand-gold/10 md:-translate-x-1/2" />
+            {milestones.map((m, i) => (
+              <div key={m.year} className={`about-section flex flex-col md:flex-row gap-10 items-start md:items-center relative ${i % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
+                <div className="w-14 h-14 rounded-full glass-elite luxury-border border-brand-gold/40 flex items-center justify-center flex-shrink-0 relative z-10 md:absolute md:left-1/2 md:-translate-x-1/2 shadow-[0_0_30px_rgba(197,160,89,0.2)]">
+                  <span className="text-[11px] font-mono font-bold text-brand-gold tracking-wider">{m.year}</span>
+                </div>
+                <div className={`md:w-1/2 ${i % 2 === 0 ? 'md:pl-20' : 'md:pr-20 md:text-right'}`}>
+                  <h3 className="font-display font-black text-2xl text-text-primary mb-4 tracking-tight">{m.title}</h3>
+                  <p className="text-text-muted text-base leading-relaxed opacity-70">{m.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* City Coverage with Proper Map */}
+      <div className="about-section py-32 relative overflow-hidden">
+        <div className="absolute left-0 bottom-0 w-[600px] h-[600px] bg-brand-gold/[0.01] blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2 pointer-events-none" />
+        <div className="max-w-5xl mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-6">COVERAGE</p>
+            <h2 className="text-display-md tracking-tighter">Present Across <span className="italic font-display">20+ Cities</span>.</h2>
+          </div>
+          
+          {/* City Grid - cleaner than a crude SVG map */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
+            {cities.map((city) => (
+              <div key={city.name} className="glass-elite rounded-[20px] p-6 text-center group hover:luxury-border hover:bg-white/[0.03] transition-all duration-700 cursor-default">
+                <div className="w-3 h-3 rounded-full bg-brand-gold mx-auto mb-4 shadow-[0_0_15px_rgba(197,160,89,0.6)] group-hover:shadow-[0_0_25px_rgba(197,160,89,0.8)] transition-all relative">
+                  <div className="absolute inset-0 rounded-full border border-brand-gold animate-ping opacity-20" />
+                </div>
+                <p className="text-sm font-semibold text-text-muted group-hover:text-brand-gold transition-colors tracking-wide">{city.name}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-text-muted text-sm mt-10 opacity-60">...and expanding to more cities every month</p>
+        </div>
+      </div>
+
+      {/* Core Values */}
+      <div className="about-section py-32 border-t border-white/5">
+        <div className="max-w-[1400px] mx-auto px-6">
+          <div className="text-center mb-16">
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-6">OUR VALUES</p>
+            <h2 className="text-display-md tracking-tighter">Built on <span className="italic font-display gold-text-gradient">Trust & Quality</span>.</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { icon: <Shield className="w-8 h-8 text-brand-gold" />, title: 'Complete Transparency', desc: 'Honest pricing, detailed condition reports, and certified vehicle history for every car we sell.' },
+              { icon: <Award className="w-8 h-8 text-brand-gold" />, title: 'Quality Guarantee', desc: 'Every car passes a rigorous 200-point inspection. If it doesn\'t meet our standards, we don\'t sell it.' },
+              { icon: <Cpu className="w-8 h-8 text-brand-gold" />, title: 'Tech-First Approach', desc: 'We leverage technology to make buying and selling cars seamless, secure, and delightful.' },
+            ].map((v) => (
+              <div key={v.title} className="about-section glass-elite luxury-border rounded-[28px] p-10 group hover:bg-white/[0.04] transition-all duration-1000">
+                <div className="w-16 h-16 rounded-2xl bg-brand-gold/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500">
+                  {v.icon}
+                </div>
+                <h3 className="font-display font-black text-2xl text-text-primary mb-4 tracking-tight">{v.title}</h3>
+                <p className="text-text-muted text-base leading-relaxed opacity-70">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

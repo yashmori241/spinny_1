@@ -1,0 +1,93 @@
+﻿Γû▓ Next.js 16.2.1 (Turbopack)
+
+  Creating an optimized production build ...
+node.exe : 
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (:  
+  String) [], RemoteExc   
+ eption
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+> Build error occurred
+Error: Turbopack build 
+failed with 2 errors:
+./app/not-found.tsx
+'styled-jsx' cannot be 
+imported from a Server 
+Component module
+It only works in a Client 
+Component but none of its 
+parents are marked with 
+'use client', so they're 
+Server Components by 
+default.
+
+
+./app/sell/page.tsx:7:1
+Module not found: Can't 
+resolve 
+'@hookform/resolvers/zod'
+  [90m 5 |[0m 
+[36mimport[0m { 
+[33mChevronRight[0m, 
+[33mCheck[0m } 
+[36mfrom[0m 
+[32m'lucide-react'[0m;
+  [90m 6 |[0m 
+[36mimport[0m { useForm 
+} [36mfrom[0m [32m'reac
+t-hook-form'[0m;
+[31m[1m>[0m [90m 7 
+|[0m [36mimport[0m { 
+zodResolver } 
+[36mfrom[0m [32m'@hookf
+orm/resolvers/zod'[0m;
+  [90m   |[0m [31m[1m^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^[0m
+  [90m 8 |[0m 
+[36mimport[0m { z } 
+[36mfrom[0m 
+[32m'zod'[0m;
+  [90m 9 |[0m 
+[36mimport[0m { brands 
+} [36mfrom[0m [32m'@/li
+b/data/cars'[0m;
+  [90m10 |[0m
+
+
+
+Import traces:
+  Client Component 
+Browser:
+    ./app/sell/page.tsx 
+[Client Component Browser]
+    ./app/sell/page.tsx 
+[Server Component]
+
+  Client Component SSR:
+    ./app/sell/page.tsx 
+[Client Component SSR]
+    ./app/sell/page.tsx 
+[Server Component]
+
+https://nextjs.org/docs/me
+ssages/module-not-found
+
+
+    at <unknown> 
+(./app/sell/page.tsx:7:1)
+    at <unknown> (https://
+nextjs.org/docs/messages/m
+odule-not-found)

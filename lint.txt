@@ -1,0 +1,196 @@
+﻿
+> spinny@0.1.0 lint
+> eslint
+
+
+C:\MY AI PROJECT\prototype A\spinny\app\about\page.tsx
+  91:33  warning  'i' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\MY AI PROJECT\prototype A\spinny\app\browse\page.tsx
+  264:16  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\MY AI PROJECT\prototype A\spinny\app\browse\page.tsx:264:16
+  262 |             <div className="sticky top-[88px] bg-bg-surface border border-border-default rounded-card p-6">
+  263 |               <h2 className="text-label text-brand-gold mb-6">FILTERS</h2>
+> 264 |               <FilterContent />
+      |                ^^^^^^^^^^^^^ This component is created during render
+  265 |             </div>
+  266 |           </aside>
+  267 |
+
+C:\MY AI PROJECT\prototype A\spinny\app\browse\page.tsx:67:25
+   65 |   const activeFilters = [...selectedBrands, ...selectedBodyTypes, ...selectedFuel, ...selectedTransmission];
+   66 |
+>  67 |   const FilterContent = () => (
+      |                         ^^^^^^^
+>  68 |     <div className="space-y-6">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  69 |       {/* Budget */}
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 192 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 193 |   );
+      | ^^^^ The component is created during render here
+  194 |
+  195 |   return (
+  196 |     <div className="pt-[72px] min-h-screen bg-bg-primary">  react-hooks/static-components
+  313:12  error  Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\MY AI PROJECT\prototype A\spinny\app\browse\page.tsx:313:12
+  311 |             </button>
+  312 |           </div>
+> 313 |           <FilterContent />
+      |            ^^^^^^^^^^^^^ This component is created during render
+  314 |           <button
+  315 |             onClick={() => setMobileFilterOpen(false)}
+  316 |             className="w-full mt-6 py-3 bg-brand-gold text-bg-primary font-semibold rounded-card"
+
+C:\MY AI PROJECT\prototype A\spinny\app\browse\page.tsx:67:25
+   65 |   const activeFilters = [...selectedBrands, ...selectedBodyTypes, ...selectedFuel, ...selectedTransmission];
+   66 |
+>  67 |   const FilterContent = () => (
+      |                         ^^^^^^^
+>  68 |     <div className="space-y-6">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  69 |       {/* Budget */}
+      ΓÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 192 |     </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 193 |   );
+      | ^^^^ The component is created during render here
+  194 |
+  195 |   return (
+  196 |     <div className="pt-[72px] min-h-screen bg-bg-primary">                     react-hooks/static-components
+
+C:\MY AI PROJECT\prototype A\spinny\app\car\[id]\page.tsx
+  32:14  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\app\car\[id]\page.tsx:32:14
+  30 |
+  31 |   useEffect(() => {
+> 32 |     if (car) setLoanAmount(Math.round(car.price * 0.8));
+     |              ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  33 |   }, [car]);
+  34 |
+  35 |   const handleThumbnailClick = (index: number) => {  react-hooks/set-state-in-effect
+
+C:\MY AI PROJECT\prototype A\spinny\app\dashboard\page.tsx
+  20:21  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\app\dashboard\page.tsx:20:21
+  18 |   const [mounted, setMounted] = useState(false);
+  19 |
+> 20 |   useEffect(() => { setMounted(true); }, []);
+     |                     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |
+  22 |   useEffect(() => {
+  23 |     if (mounted && !isAuthenticated) router.push('/login');                                                                                 react-hooks/set-state-in-effect
+  26:31  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\app\dashboard\page.tsx:26:31
+  24 |   }, [mounted, isAuthenticated, router]);
+  25 |
+> 26 |   useEffect(() => { if (user) setNameVal(user.name); }, [user]);
+     |                               ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |
+  28 |   if (!mounted || !isAuthenticated) return (
+  29 |     <div className="pt-[72px] min-h-screen bg-bg-primary flex items-center justify-center">  react-hooks/set-state-in-effect
+
+C:\MY AI PROJECT\prototype A\spinny\app\page.tsx
+  280:6  warning  React Hook useEffect has a missing dependency: 'steps'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\MY AI PROJECT\prototype A\spinny\app\sell\page.tsx
+  50:44  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\MY AI PROJECT\prototype A\spinny\app\sell\page.tsx:50:44
+  48 |   };
+  49 |
+> 50 |   const handleStep1 = carForm.handleSubmit(() => goToStep(1));
+     |                                            ^^^^^^^^^^^^^^^^^ Passing a ref to a function may read its value during render
+  51 |
+  52 |   const handleSendOtp = () => {
+  53 |     setOtpSent(true);  react-hooks/refs
+
+C:\MY AI PROJECT\prototype A\spinny\components\layout\Navbar.tsx
+  26:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\components\layout\Navbar.tsx:26:5
+  24 |
+  25 |   useEffect(() => {
+> 26 |     setMobileOpen(false);
+     |     ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  27 |   }, [pathname]);
+  28 |
+  29 |   useEffect(() => {  react-hooks/set-state-in-effect
+
+C:\MY AI PROJECT\prototype A\spinny\components\ui\CustomCursor.tsx
+  10:10  warning  'isHovering' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+  20:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\components\ui\CustomCursor.tsx:20:5
+  18 |     if (!hasFineMouse) return;
+  19 |
+> 20 |     setIsVisible(true);
+     |     ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  21 |
+  22 |     const outer = outerRef.current;
+  23 |     const inner = innerRef.current;  react-hooks/set-state-in-effect
+
+C:\MY AI PROJECT\prototype A\spinny\components\ui\LoadingScreen.tsx
+  15:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\MY AI PROJECT\prototype A\spinny\components\ui\LoadingScreen.tsx:15:7
+  13 |
+  14 |     if (sessionStorage.getItem('spinny-loaded')) {
+> 15 |       setShow(false);
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  16 |       return;
+  17 |     }
+  18 |  react-hooks/set-state-in-effect
+
+Γ£û 12 problems (9 errors, 3 warnings)
+
