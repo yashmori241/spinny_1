@@ -18,7 +18,7 @@ export function Navbar() {
   useEffect(() => {
     setMounted(true);
     const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
+      setScrolled(window.scrollY > 60);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
@@ -45,37 +45,59 @@ export function Navbar() {
     { label: 'About Us', href: '/about' },
   ];
 
+  const isScrolledOrNotHome = scrolled || pathname !== '/';
+
   return (
     <>
       <nav
         className={`${
           pathname === '/' ? 'fixed' : 'sticky'
-        } top-0 left-0 right-0 z-[9990] transition-all duration-700 ease-luxury ${
-          scrolled || pathname !== '/'
-            ? 'bg-bg-primary shadow-[0_20px_40px_rgba(0,0,0,0.8)] border-b border-white/5'
-            : 'bg-transparent border-b border-transparent'
-        }`}
-        style={{ height: 80 }}
+        } top-0 left-0 right-0 z-[9990] transition-all duration-300 ease-out`}
+        style={{
+          height: isScrolledOrNotHome ? '64px' : '80px',
+          backdropFilter: isScrolledOrNotHome ? 'blur(20px) saturate(180%)' : 'none',
+          WebkitBackdropFilter: isScrolledOrNotHome ? 'blur(20px) saturate(180%)' : 'none',
+          background: isScrolledOrNotHome
+            ? 'rgba(5,5,5,0.9)'
+            : 'transparent',
+          borderBottom: isScrolledOrNotHome
+            ? '1px solid rgba(91,45,134,0.12)'
+            : '1px solid transparent',
+          boxShadow: isScrolledOrNotHome
+            ? '0 4px 24px rgba(91,45,134,0.08)'
+            : 'none',
+        }}
       >
-        <div className="max-w-[1400px] mx-auto px-6 h-full flex items-center justify-between">
+        <div
+          className="max-w-[1280px] mx-auto h-full flex items-center justify-between"
+          style={{ padding: '0 clamp(20px, 5vw, 80px)' }}
+        >
           {/* Logo */}
           <Link href="/" className="flex items-center gap-4 group">
-            <div className="w-9 h-9 rounded-full border border-brand-gold/30 flex items-center justify-center group-hover:border-brand-gold transition-all duration-1000 bg-brand-gold/5 relative">
+            <div className="w-9 h-9 rounded-full border border-brand-gold/30 flex items-center justify-center group-hover:border-brand-gold transition-all duration-700 bg-brand-gold/5 relative">
               <div className="w-2 h-2 rounded-full bg-brand-gold shadow-[0_0_15px_rgba(197,160,89,0.9)]" />
               <div className="absolute inset-0 rounded-full border border-brand-gold/40 animate-ping opacity-10" />
             </div>
-            <span className="font-display text-lg font-black text-text-primary tracking-[0.3em] group-hover:text-brand-gold transition-colors duration-700">
+            <span
+              className="font-display text-lg font-black text-text-primary tracking-[0.3em] transition-all duration-700"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, currentColor, currentColor)',
+              }}
+            >
               SPINNY
             </span>
           </Link>
 
           {/* Desktop Nav */}
-          <div className="hidden lg:flex items-center gap-10">
+          <div
+            className="hidden lg:flex items-center"
+            style={{ gap: 'clamp(24px, 3vw, 40px)' }}
+          >
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-500 relative py-1
+                className={`nav-link-underline text-[11px] font-semibold uppercase tracking-[0.2em] transition-all duration-300 relative py-1
                   ${pathname === link.href ? 'text-brand-gold' : 'text-text-muted hover:text-text-primary'}`}
               >
                 {link.label}
@@ -90,14 +112,14 @@ export function Navbar() {
           <div className="hidden lg:flex items-center gap-5">
             <Link
               href="/compare"
-              className="p-2.5 text-text-muted hover:text-brand-gold transition-colors duration-500"
+              className="p-2.5 text-text-muted hover:text-brand-gold transition-colors duration-300"
               data-cursor
             >
               <GitCompareArrows size={18} />
             </Link>
             <Link
               href="/dashboard"
-              className="relative p-2.5 text-text-muted hover:text-brand-gold transition-colors duration-500"
+              className="relative p-2.5 text-text-muted hover:text-brand-gold transition-colors duration-300"
               data-cursor
             >
               <Heart size={18} />
@@ -110,7 +132,7 @@ export function Navbar() {
             <Link
               href={isAuthenticated ? '/dashboard' : '/login'}
               className="ml-3 px-7 py-2.5 bg-brand-gold text-bg-primary text-[11px] font-bold uppercase tracking-[0.15em] rounded-full
-                hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all duration-700 ease-luxury shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+                hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
               data-cursor
             >
               {mounted ? (isAuthenticated ? 'Dashboard' : 'Sign In') : 'Sign In'}
@@ -180,6 +202,6 @@ export function Navbar() {
         </div>
       </div>
     </div>
-  </>
-);
+    </>
+  );
 }

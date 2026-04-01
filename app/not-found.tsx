@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 
 export default function NotFound() {
@@ -23,7 +21,7 @@ export default function NotFound() {
            <span className="italic font-display gold-text-gradient">Located</span><span className="text-brand-gold">.</span>
         </h1>
         <p className="text-text-muted text-lg font-body leading-relaxed max-w-sm mx-auto mb-12 opacity-60">
-          The requested coordinate does not exist within our current portfolio. 
+          The requested coordinate does not exist within our current portfolio.
           Return to the executive suite to continue your acquisition.
         </p>
         <Link
@@ -35,8 +33,8 @@ export default function NotFound() {
         </Link>
       </div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0 pointer-events-none" suppressHydrationWarning>
+      {/* Floating particles — using CSS animation from globals.css */}
+      <div className="absolute inset-0 pointer-events-none">
         {Array.from({ length: 12 }).map((_, i) => (
           <div
             key={i}
@@ -45,18 +43,11 @@ export default function NotFound() {
               left: `${(i * 17) % 100}%`,
               top: `${(i * 23) % 100}%`,
               animation: `float ${3 + (i % 4)}s ease-in-out infinite`,
-              animationDelay: `${(i % 2)}s`,
+              animationDelay: `${i % 2}s`,
             }}
           />
         ))}
       </div>
-
-      <style jsx>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.3; }
-          50% { transform: translateY(-20px) scale(1.5); opacity: 0.8; }
-        }
-      `}</style>
     </div>
   );
 }

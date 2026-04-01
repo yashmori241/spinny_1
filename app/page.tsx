@@ -1,77 +1,70 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ChevronDown, Search, CheckCircle2, Home, Key, Shield, RotateCcw, FileCheck, Car } from 'lucide-react';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { MarqueeStrip } from '@/components/ui/MarqueeStrip';
 import { CarCard } from '@/components/ui/CarCard';
+import { TiltCard } from '@/components/ui/TiltCard';
+import { SectionReveal, StaggerReveal, CountUp } from '@/components/ui/SectionReveal';
 import { cars } from '@/lib/data/cars';
 
 /* ===================== HERO SECTION ===================== */
 function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null);
-  const imgRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
+  const [videoError, setVideoError] = useState(false);
+  const [HeroCanvas, setHeroCanvas] = useState<React.ComponentType | null>(null);
+  const shouldReduceMotion = useReducedMotion();
 
+  // Lazy-load Three.js canvas
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    let ctx: gsap.Context;
-    try {
-      gsap.registerPlugin(ScrollTrigger);
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) return;
-
-      ctx = gsap.context(() => {
-        if (imgRef.current) {
-          gsap.to(imgRef.current, {
-            yPercent: 30,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: true,
-            },
-          });
-        }
-
-        const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-        tl.from('.hero-label', { opacity: 0, y: 20, duration: 0.6, delay: 0.3 })
-          .from('.hero-line-1', { opacity: 0, y: 60, duration: 0.8 }, 0.5)
-          .from('.hero-line-2', { opacity: 0, y: 60, duration: 0.8 }, 0.7)
-          .from('.hero-line-3', { opacity: 0, y: 60, duration: 0.8 }, 0.9)
-          .from('.hero-sub', { opacity: 0, y: 20, duration: 0.6 }, 1.1)
-          .from('.hero-ctas', { opacity: 0, y: 20, duration: 0.6 }, 1.3);
-
-        if (scrollIndicatorRef.current) {
-          gsap.to(scrollIndicatorRef.current, {
-            opacity: 0,
-            scrollTrigger: {
-              trigger: heroRef.current,
-              start: '80px top',
-              end: '160px top',
-              scrub: true,
-            },
-          });
-        }
-      }, heroRef);
-
-      return () => ctx.revert();
-    } catch (e) {
-      console.warn('Hero GSAP failed:', e);
-    }
+    import('@/components/ui/HeroCanvas').then((mod) => {
+      setHeroCanvas(() => mod.HeroCanvas);
+    }).catch(() => {/* optional — silently skip */});
   }, []);
+
+  // Scroll indicator fade
+  useEffect(() => {
+    if (shouldReduceMotion) return;
+    const handleScroll = () => {
+      if (!scrollIndicatorRef.current) return;
+      const opacity = Math.max(0, 1 - window.scrollY / 160);
+      scrollIndicatorRef.current.style.opacity = String(opacity);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [shouldReduceMotion]);
+
+  const headlineWords = ['Find', 'Your', 'Luxury', 'Heritage', 'Portfolio'];
+  const stagger = shouldReduceMotion ? 0 : 0.08;
 
   return (
     <section ref={heroRef} className="relative w-full overflow-hidden" style={{ height: '100svh' }}>
-      {/* Background Image */}
-      <div ref={imgRef} className="absolute inset-0 w-full h-[140%] -top-[20%] overflow-hidden">
-        <div className="absolute inset-0" suppressHydrationWarning>
+      {/* ── Background Video Layer ── */}
+      {!videoError && (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          onError={() => setVideoError(true)}
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        >
+          <source
+            src="https://cdn.coverr.co/videos/coverr-driving-through-the-city-at-night-1510/mp4"
+            type="video/mp4"
+          />
+        </video>
+      )}
+
+      {/* ── Fallback Image ── */}
+      {videoError && (
+        <div className="absolute inset-0 w-full h-[140%] -top-[20%] overflow-hidden" style={{ zIndex: 0 }}>
           <Image
             src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1920&q=80"
             alt="Premium dark car on dramatic background"
@@ -81,66 +74,161 @@ function HeroSection() {
             className="object-cover"
           />
         </div>
-      </div>
+      )}
 
-      {/* Overlay */}
+      {/* ── Overlay ── */}
       <div
         className="absolute inset-0"
         style={{
-          background:
-            'linear-gradient(100deg, rgba(5,5,5,0.97) 0%, rgba(5,5,5,0.75) 40%, rgba(5,5,5,0.3) 100%)',
+          background: 'linear-gradient(to bottom, rgba(20,10,40,0.55) 0%, rgba(61,26,110,0.4) 50%, rgba(0,0,0,0.70) 100%)',
+          zIndex: 1,
         }}
       />
 
-      {/* Content */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="max-w-[1400px] mx-auto px-6 w-full">
-          <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-16">
-            {/* Left Content */}
-            <div className="max-w-[700px]">
-              <div className="hero-label flex items-center gap-4 mb-8 opacity-60">
-                 <div className="w-12 h-[1px] bg-brand-gold/50" />
-                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">PORTFOLIO REDEFINED</p>
-              </div>
-              
-              <h1 className="hero-title relative mb-12">
-                <span className="hero-line-1 text-display-xl block tracking-[-0.04em] leading-[0.9] text-text-primary">
-                  Find Your
-                </span>
-                <span className="hero-line-2 text-display-xl block tracking-[-0.03em] leading-[0.9] italic font-display gold-text-gradient py-2">
-                  Luxury Heritage
-                </span>
-                <span className="hero-line-3 text-display-xl block tracking-[-0.04em] leading-[0.9] text-text-primary">
-                  Portfolio<span className="text-brand-gold">.</span>
-                </span>
-              </h1>
+      {/* ── Text glow behind block ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse at 30% 50%, rgba(91,45,134,0.25) 0%, transparent 65%)',
+          zIndex: 2,
+        }}
+      />
 
-              <p className="hero-sub text-xl text-text-muted mt-10 font-body max-w-[540px] tracking-wide leading-relaxed opacity-80">
-                Curating India&apos;s most prestigious pre-owned automotive collection. 
-                Each vehicle is a testament to engineering excellence and certified heritage.
+      {/* ── 3D Hero Canvas (desktop only) ── */}
+      {HeroCanvas && (
+        <div style={{ zIndex: 3 }}>
+          <HeroCanvas />
+        </div>
+      )}
+
+      {/* ── Text Content ── */}
+      <div className="relative h-full flex items-center" style={{ zIndex: 4 }}>
+        <div className="max-w-[1280px] mx-auto w-full" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+          <div style={{ maxWidth: 600, paddingTop: 'clamp(120px, 14vw, 200px)' }}>
+
+            {/* Eyebrow */}
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="flex items-center gap-4"
+              style={{ marginBottom: '20px' }}
+            >
+              <div className="w-10 h-[1px] bg-brand-gold/50" />
+              <p
+                className="text-brand-gold font-bold uppercase"
+                style={{ fontSize: 11, letterSpacing: '0.18em' }}
+              >
+                PORTFOLIO REDEFINED
               </p>
+            </motion.div>
 
-              <div className="hero-ctas flex gap-6 mt-14 flex-wrap items-center">
-                <Link href="/browse">
-                  <MagneticButton variant="gold" className="px-10 h-14 text-[11px] font-bold uppercase tracking-[0.2em] rounded-full">
-                    Explore Collection
-                  </MagneticButton>
-                </Link>
-                <Link href="/sell">
-                  <MagneticButton variant="ghost" className="px-10 h-14 text-[11px] font-bold uppercase tracking-[0.2em] border-white/10 hover:border-brand-gold/40 rounded-full">
-                    Sell Your Car
-                  </MagneticButton>
-                </Link>
-              </div>
-            </div>
+            {/* Staggered Headline */}
+            <motion.h1
+              className="relative"
+              initial="hidden"
+              animate="show"
+              variants={{
+                hidden: {},
+                show: { transition: { staggerChildren: stagger, delayChildren: 0.4 } },
+              }}
+              style={{ marginBottom: 0 }}
+            >
+              <motion.span
+                className="text-display-xl block tracking-[-0.04em] leading-[0.9] text-text-primary"
+                variants={{
+                  hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 60 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+                }}
+              >
+                Find Your
+              </motion.span>
+              <motion.span
+                className="text-display-xl block tracking-[-0.03em] leading-[0.9] italic font-display gold-text-gradient py-2"
+                variants={{
+                  hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 60 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+                }}
+              >
+                Luxury Heritage
+              </motion.span>
+              <motion.span
+                className="text-display-xl block tracking-[-0.04em] leading-[0.9] text-text-primary"
+                variants={{
+                  hidden: shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 60 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
+                }}
+              >
+                Portfolio<span className="text-brand-gold">.</span>
+              </motion.span>
+            </motion.h1>
+
+            {/* Sub-headline */}
+            <motion.p
+              className="text-text-muted font-body opacity-80"
+              style={{
+                fontSize: 18,
+                maxWidth: '52ch',
+                lineHeight: 1.72,
+                marginTop: 'clamp(20px, 2.5vw, 32px)',
+              }}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+              animate={{ opacity: 0.8, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Curating India&apos;s most prestigious pre-owned automotive collection.
+              Each vehicle is a testament to engineering excellence and certified heritage.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              className="flex flex-wrap items-center"
+              style={{ gap: 16, marginTop: 'clamp(28px, 3.5vw, 48px)' }}
+              initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 1.3, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <Link href="/browse">
+                <MagneticButton variant="gold" className="px-10 h-14 text-[11px] font-bold uppercase tracking-[0.2em] rounded-full">
+                  Explore Collection
+                </MagneticButton>
+              </Link>
+              <Link href="/sell">
+                <MagneticButton variant="ghost" className="px-10 h-14 text-[11px] font-bold uppercase tracking-[0.2em] border-white/10 hover:border-brand-gold/40 rounded-full">
+                  Sell Your Car
+                </MagneticButton>
+              </Link>
+            </motion.div>
           </div>
+        </div>
+      </div>
+
+      {/* ── Hero Bottom Strip (Assured Ticker) ── */}
+      <div
+        className="absolute bottom-0 left-0 right-0"
+        style={{
+          backdropFilter: 'blur(12px)',
+          background: 'rgba(255,255,255,0.08)',
+          borderTop: '1px solid rgba(255,255,255,0.12)',
+          padding: '20px clamp(24px, 5vw, 80px)',
+          zIndex: 5,
+        }}
+      >
+        <div className="flex items-center gap-6 text-white text-[11px] font-semibold uppercase tracking-[0.15em] overflow-hidden">
+          {['200-Point Inspection', '5-Day Money Back', 'Free RC Transfer', 'Home Test Drive', 'Certified Pre-Owned'].map((item, i) => (
+            <span key={i} className="flex items-center gap-6 whitespace-nowrap flex-shrink-0">
+              {item}
+              {i < 4 && <span style={{ color: '#C5A059' }}>◆</span>}
+            </span>
+          ))}
         </div>
       </div>
 
       {/* Scroll Indicator */}
       <div
         ref={scrollIndicatorRef}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        className="absolute bottom-20 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        style={{ zIndex: 5 }}
       >
         <span className="text-[11px] text-text-muted tracking-[0.2em] uppercase">Scroll</span>
         <ChevronDown size={18} className="text-text-muted" style={{ animation: 'bounce-scroll 2s ease-in-out infinite' }} />
@@ -149,39 +237,8 @@ function HeroSection() {
   );
 }
 
-/* ===================== TRUST NUMBERS ===================== */
+/* ===================== STATS SECTION ===================== */
 function TrustNumbers() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      const counters = sectionRef.current?.querySelectorAll('.stat-number');
-      counters?.forEach((counter) => {
-        const target = parseInt(counter.getAttribute('data-target') || '0', 10);
-        gsap.fromTo(
-          counter,
-          { textContent: 0 },
-          {
-            textContent: target,
-            duration: 1.8,
-            ease: 'power2.out',
-            snap: { textContent: 1 },
-            scrollTrigger: {
-              trigger: counter,
-              start: 'top 80%',
-              once: true,
-            },
-          }
-        );
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   const stats = [
     { number: 200000, suffix: '+', label: 'Happy Customers' },
     { number: 10000, suffix: '+', label: 'Cars Available' },
@@ -190,30 +247,48 @@ function TrustNumbers() {
   ];
 
   return (
-    <section ref={sectionRef} className="bg-bg-primary py-32 overflow-hidden border-y border-white/5 relative">
+    <section
+      className="overflow-hidden border-y border-white/5 relative"
+      style={{ padding: 'clamp(72px, 9vw, 120px) 0' }}
+    >
       <div className="absolute inset-0 bg-brand-gold/[0.02] pointer-events-none" />
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        <StaggerReveal
+          containerClassName="grid grid-cols-2 lg:grid-cols-4"
+          className=""
+          staggerDelay={0.1}
+        >
           {stats.map((stat) => (
             <div
               key={stat.label}
-              className="glass-elite rounded-[32px] p-10 text-center relative overflow-hidden group hover:luxury-border transition-all duration-1000 ease-luxury shadow-[0_20px_60px_rgba(0,0,0,0.4)]"
+              className="glass-elite rounded-[32px] text-center relative overflow-hidden group hover:luxury-border transition-all duration-700 cursor-default"
+              style={{ padding: 'clamp(28px, 3vw, 40px)', gap: 'clamp(32px, 5vw, 64px)' }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.03)'; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)'; }}
             >
-              <div className="text-stat gold-text-gradient font-display font-black tracking-tighter mb-4">
-                <span className="stat-number" data-target={stat.number}>
-                  0
+              <div
+                className="font-display font-black tracking-tighter mb-2"
+                style={{ fontSize: 'clamp(40px, 5vw, 64px)', lineHeight: 1 }}
+              >
+                <span className="purple-text-gradient">
+                  <CountUp to={stat.number} suffix={stat.suffix} duration={2} />
                 </span>
-                <span className="text-2xl opacity-50 ml-1">{stat.suffix}</span>
               </div>
-              <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-text-muted group-hover:text-brand-gold transition-colors duration-700">{stat.label}</p>
+              <p
+                className="font-semibold text-text-muted uppercase group-hover:text-brand-gold transition-colors duration-700"
+                style={{ fontSize: 'clamp(13px, 1.2vw, 15px)', letterSpacing: '0.06em', marginTop: 8 }}
+              >
+                {stat.label}
+              </p>
             </div>
           ))}
-        </div>
+        </StaggerReveal>
       </div>
     </section>
   );
 }
 
+/* ===================== HOW IT WORKS ===================== */
 const howItWorksSteps = [
   {
     num: '01',
@@ -241,274 +316,151 @@ const howItWorksSteps = [
   },
 ];
 
-/* ===================== HOW IT WORKS (SCROLLJACK) ===================== */
 function HowItWorks() {
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.matchMedia({
-        '(min-width: 769px)': function () {
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: '.how-it-works',
-              start: 'top top',
-              end: '+=300%',
-              pin: '.how-it-works-inner',
-              scrub: 1,
-              anticipatePin: 1,
-            },
-          });
-
-          howItWorksSteps.forEach((_, i) => {
-            if (i < howItWorksSteps.length - 1) {
-              tl.to(
-                `#step-${i}`,
-                { opacity: 0, yPercent: -15, scale: 0.95, duration: 0.3, ease: 'power2.inOut' },
-                i * 0.25 + 0.2
-              );
-              tl.from(
-                `#step-${i + 1}`,
-                { opacity: 0, yPercent: 15, scale: 1.05, duration: 0.3, ease: 'power2.out' },
-                i * 0.25 + 0.25
-              );
-            }
-          });
-        },
-        '(max-width: 768px)': function () {
-          howItWorksSteps.forEach((_, i) => {
-            gsap.from(`#step-${i}`, {
-              opacity: 0,
-              y: 40,
-              duration: 0.6,
-              scrollTrigger: {
-                trigger: `#step-${i}`,
-                start: 'top 85%',
-                once: true,
-              },
-            });
-          });
-        },
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <div ref={containerRef}>
-      {/* Desktop: scrolljack */}
-      <div className="how-it-works hidden md:block" style={{ height: '400vh' }}>
-        <div
-          className="how-it-works-inner bg-bg-primary flex items-center relative overflow-hidden"
-          style={{ height: '100vh' }}
-        >
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[600px] h-[600px] bg-brand-gold/5 blur-[150px] rounded-full pointer-events-none" />
-          
-          <div className="max-w-[1400px] mx-auto px-6 w-full relative z-10">
-            <div className="flex items-center gap-4 mb-6">
-               <div className="w-12 h-[1px] bg-brand-gold/30" />
-               <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">HOW IT WORKS</p>
-            </div>
-            <h2 className="text-display-lg mb-20 tracking-tighter">
-              A Simple Path to<br />Your Dream Car<span className="text-brand-gold">.</span>
-            </h2>
-            <div className="relative" style={{ minHeight: 300 }}>
-              {howItWorksSteps.map((step, i) => (
-                <div
-                  key={step.num}
-                  id={`step-${i}`}
-                  className="absolute inset-0 flex items-start gap-16"
-                  style={{ opacity: i === 0 ? 1 : 0 }}
-                >
-                  <div className="flex-1 max-w-lg">
-                    <span className="text-display-xl gold-text-gradient block mb-6">
-                      {step.num}
-                    </span>
-                    <h3 className="text-display-md text-text-primary mb-6">
-                      {step.title}
-                    </h3>
-                    <p className="text-text-muted text-lg leading-relaxed font-body">
-                      {step.desc}
-                    </p>
-                  </div>
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="w-56 h-56 rounded-full bg-bg-surface border border-border-default flex items-center justify-center glass shadow-2xl">
-                      {step.icon}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+    <section
+      className="bg-bg-primary relative overflow-hidden"
+      style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
+    >
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] bg-brand-gold/5 blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Mobile: stacked cards */}
-      <div className="md:hidden py-24 bg-bg-primary">
-        <div className="max-w-[1400px] mx-auto px-6">
-          <p className="text-label text-brand-gold mb-4">HOW IT WORKS</p>
-          <h2 className="text-display-lg mb-12">
-            Four Simple Steps.
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        {/* Heading block */}
+        <div style={{ marginBottom: 'clamp(56px, 7vw, 96px)' }}>
+        <SectionReveal>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="w-12 h-[1px] bg-brand-gold/30" />
+            <p className="eyebrow text-brand-gold">HOW IT WORKS</p>
+          </div>
+          <h2 className="text-display-lg tracking-tighter">
+            A Simple Path to<br />Your Dream Car<span className="text-brand-gold">.</span>
           </h2>
-          <div className="space-y-6">
-            {howItWorksSteps.map((step, i) => (
+        </SectionReveal>
+        </div>
+
+        {/* Step cards grid */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+          style={{ gap: 'clamp(32px, 4vw, 56px)' }}
+        >
+          {howItWorksSteps.map((step, i) => (
+            <SectionReveal key={step.num} delay={i * 0.1}>
               <div
-                key={step.num}
-                id={`step-${i}`}
-                className="glass-elite luxury-border rounded-[24px] p-8"
+                className="step-card-accent glass-elite luxury-border-transparent rounded-[28px] transition-all duration-500 group"
+                style={{ padding: 'clamp(28px, 3vw, 40px)' }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 16px 40px rgba(91,45,134,0.15)';
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = '';
+                  (e.currentTarget as HTMLElement).style.transform = '';
+                }}
               >
-                <div className="flex items-center gap-5 mb-5">
-                  <span className="text-3xl font-display font-bold gold-text-gradient">
-                    {step.num}
-                  </span>
-                  <div className="w-14 h-14 rounded-full bg-bg-surface2 flex items-center justify-center glass shadow-lg">
-                    {step.icon}
-                  </div>
+                {/* Number */}
+                <div
+                  className="font-display font-black gold-text-gradient leading-none"
+                  style={{
+                    fontSize: 'clamp(48px, 6vw, 72px)',
+                    lineHeight: 1,
+                    marginBottom: 20,
+                  }}
+                >
+                  <CountUp to={parseInt(step.num)} suffix="" duration={1.2} />
                 </div>
-                <h3 className="text-xl font-display font-bold text-text-primary mb-3">
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-full bg-bg-surface2 flex items-center justify-center mb-5">
+                  {step.icon}
+                </div>
+                {/* Title */}
+                <h3 className="font-display font-bold text-text-primary text-xl tracking-tight" style={{ marginBottom: 12 }}>
                   {step.title}
                 </h3>
-                <p className="text-text-muted text-sm leading-relaxed">{step.desc}</p>
+                {/* Body */}
+                <p className="text-text-muted text-sm" style={{ lineHeight: 1.72, maxWidth: '36ch' }}>
+                  {step.desc}
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ===================== FEATURED CARS (DRAGGABLE CAROUSEL) ===================== */
-function FeaturedCars() {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const isDragging = useRef(false);
-  const startX = useRef(0);
-  const scrollLeft = useRef(0);
-  const lastVelocity = useRef(0);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const track = trackRef.current;
-    if (!track) return;
-    isDragging.current = true;
-    startX.current = e.pageX - track.offsetLeft;
-    scrollLeft.current = track.scrollLeft;
-    track.style.cursor = 'grabbing';
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const track = trackRef.current;
-    if (!track) return;
-    e.preventDefault();
-    const x = e.pageX - track.offsetLeft;
-    const walk = x - startX.current;
-    track.scrollLeft = scrollLeft.current - walk;
-    lastVelocity.current = walk;
-  };
-
-  const handleMouseUp = () => {
-    isDragging.current = false;
-    const track = trackRef.current;
-    if (!track) return;
-    track.style.cursor = 'grab';
-    gsap.to(track, {
-      scrollLeft: track.scrollLeft - lastVelocity.current * 8,
-      duration: 0.8,
-      ease: 'power2.out',
-    });
-  };
-
-  const featuredCars = cars.filter((c) => c.trending).slice(0, 6);
-  const displayCars =
-    featuredCars.length >= 6
-      ? featuredCars
-      : [...featuredCars, ...cars.filter((c) => !c.trending)].slice(0, 6);
-
-  return (
-    <section className="py-32 bg-bg-primary border-t border-white/5 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
-      
-      <div className="max-w-[1400px] mx-auto px-6 mb-14">
-        <div className="flex items-center gap-4 mb-8 opacity-60">
-           <div className="w-12 h-[1px] bg-brand-gold/50" />
-           <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">FEATURED CARS</p>
-        </div>
-        <div className="flex items-end justify-between gap-12">
-          <h2 className="text-display-lg tracking-tighter leading-[0.95]">
-            Handpicked <br />
-            <span className="italic font-display gold-text-gradient">Premium Cars</span><span className="text-brand-gold">.</span>
-          </h2>
-          <Link
-            href="/browse"
-            className="hidden md:inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold hover:text-white transition-all group"
-          >
-            View All Cars
-            <div className="w-8 h-[1px] bg-brand-gold/30 group-hover:w-12 group-hover:bg-white transition-all" />
-          </Link>
-        </div>
-      </div>
-
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div
-          ref={trackRef}
-          data-cursor="drag"
-          className="flex gap-6 overflow-x-auto scrollbar-hide pb-4 select-none"
-          style={{ cursor: 'grab', scrollbarWidth: 'none' }}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-        >
-          {displayCars.map((car) => (
-            <div key={car.id} className="min-w-[340px] max-w-[340px] flex-shrink-0">
-              <CarCard car={car} />
-            </div>
+            </SectionReveal>
           ))}
         </div>
-      </div>
-
-      <div className="md:hidden text-center mt-8">
-        <Link
-          href="/browse"
-          className="text-sm text-brand-gold hover:underline font-body"
-        >
-          View All Cars →
-        </Link>
       </div>
     </section>
   );
 }
 
-/* ===================== SPINNY ASSURED ===================== */
+/* ===================== FEATURED CARS ===================== */
+function FeaturedCars() {
+  const displayCars = cars.filter((c) => c.trending).slice(0, 3)
+    .concat(cars.filter((c) => !c.trending).slice(0, 3)).slice(0, 6);
+
+  return (
+    <section
+      className="relative overflow-hidden"
+      style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
+    >
+      {/* Ambient purple glow */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(91,45,134,0.07) 0%, transparent 70%)' }}
+      />
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-brand-gold/20 to-transparent" />
+
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        {/* Heading */}
+        <div style={{ marginBottom: 'clamp(40px, 5vw, 64px)' }}>
+        <SectionReveal>
+          <div className="flex items-end justify-between gap-8">
+            <div>
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-[1px] bg-brand-gold/50" />
+                <p className="eyebrow text-brand-gold">FEATURED CARS</p>
+              </div>
+              <h2 className="text-display-lg tracking-tighter leading-[0.95]">
+                Handpicked <br />
+                <span className="italic font-display gold-text-gradient">Premium Cars</span><span className="text-brand-gold">.</span>
+              </h2>
+            </div>
+            <Link
+              href="/browse"
+              className="hidden md:inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold hover:text-white transition-all group"
+            >
+              View All Cars
+              <div className="w-8 h-[1px] bg-brand-gold/30 group-hover:w-12 group-hover:bg-white transition-all" />
+            </Link>
+          </div>
+        </SectionReveal>
+        </div>
+
+        {/* Card grid */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+          style={{ gap: 'clamp(20px, 2.5vw, 32px)' }}
+        >
+          {displayCars.map((car, i) => (
+            <SectionReveal key={car.id} delay={i * 0.06}>
+              <CarCard car={car} />
+            </SectionReveal>
+          ))}
+        </div>
+
+        {/* View All link (mobile + centered desktop) */}
+        <div className="text-center" style={{ marginTop: 'clamp(40px, 5vw, 64px)' }}>
+          <Link
+            href="/browse"
+            className="inline-flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold hover:text-white transition-all group"
+          >
+            View All 10,000+ Cars
+            <div className="w-8 h-[1px] bg-brand-gold/30 group-hover:w-12 group-hover:bg-white transition-all" />
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ===================== WHY SPINNY ===================== */
 function SpinnyAssured() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReduced) return;
-
-    const ctx = gsap.context(() => {
-      gsap.from('.assured-feature', {
-        opacity: 0,
-        y: 30,
-        stagger: 0.1,
-        duration: 0.6,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 70%',
-          once: true,
-        },
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
-
   const features = [
     { icon: <Shield className="w-7 h-7 text-brand-gold" />, title: '200-Point Inspection', desc: 'Rigorous quality checks covering engine, body, electricals, transmission, and more.' },
     { icon: <RotateCcw className="w-7 h-7 text-brand-gold" />, title: '5-Day Money Back', desc: "Not satisfied? Return the car within 5 days, no questions asked. Full refund guaranteed." },
@@ -518,33 +470,69 @@ function SpinnyAssured() {
 
   return (
     <section
-      ref={sectionRef}
-      className="py-32 relative overflow-hidden border-y border-white/5"
+      className="relative overflow-hidden border-y border-white/5"
+      style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
     >
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="text-center mb-20">
-            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-5">WHY SPINNY</p>
-            <h2 className="text-display-lg mb-6 tracking-tighter">Uncompromising Quality.</h2>
-            <p className="text-text-muted text-lg max-w-2xl mx-auto font-body leading-relaxed opacity-80">
-              Every car in our collection undergoes a rigorous 200-point inspection 
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        {/* Intro */}
+        <SectionReveal>
+          <div className="text-center" style={{ marginBottom: 'clamp(48px, 6vw, 80px)' }}>
+            <p className="eyebrow text-brand-gold mb-4">WHY SPINNY</p>
+            <h2 className="text-display-lg mb-4 tracking-tighter">Uncompromising Quality.</h2>
+            <p className="text-text-muted text-lg mx-auto opacity-80" style={{ maxWidth: '56ch', lineHeight: 1.72, marginTop: 16 }}>
+              Every car in our collection undergoes a rigorous 200-point inspection
               to meet our high standards before reaching you.
             </p>
-        </div>
+          </div>
+        </SectionReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((f) => (
-            <div
-              key={f.title}
-              className="assured-feature glass-elite rounded-[28px] p-8 text-left luxury-border-transparent hover:luxury-border transition-all duration-700 group"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-brand-gold/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                {f.icon}
+        {/* Feature cards */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+          style={{ gap: 'clamp(24px, 3vw, 40px)' }}
+        >
+          {features.map((f, i) => (
+            <SectionReveal key={f.title} delay={i * 0.08}>
+              <div
+                className="glass-elite luxury-border-transparent rounded-[28px] text-left transition-all duration-500 group cursor-default"
+                style={{ padding: 'clamp(24px, 3vw, 36px)' }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = '0 0 32px rgba(91,45,134,0.18)';
+                  (e.currentTarget as HTMLElement).style.transform = 'translateY(-4px)';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLElement).style.boxShadow = '';
+                  (e.currentTarget as HTMLElement).style.transform = '';
+                }}
+              >
+                <div
+                  className="flex items-center justify-center rounded-[14px] mb-5 group-hover:rotate-[8deg] transition-transform duration-500 relative overflow-hidden"
+                  style={{
+                    width: 56,
+                    height: 56,
+                    background: 'rgba(91,45,134,0.12)',
+                    marginBottom: 20,
+                  }}
+                >
+                  {/* Shimmer sweep on icon */}
+                  <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{
+                      background: 'linear-gradient(90deg, transparent, rgba(197,160,89,0.3), transparent)',
+                      backgroundSize: '200% 100%',
+                      animation: 'shimmerSweep 1.2s ease-out',
+                    }}
+                  />
+                  {f.icon}
+                </div>
+                <h3 className="font-display font-black text-text-primary text-lg tracking-tight" style={{ marginBottom: 10 }}>
+                  {f.title}
+                </h3>
+                <p className="text-text-muted text-sm opacity-80" style={{ lineHeight: 1.72, maxWidth: '34ch' }}>
+                  {f.desc}
+                </p>
               </div>
-              <h3 className="text-lg font-display font-black text-text-primary mb-3 tracking-tight">{f.title}</h3>
-              <p className="text-text-muted text-sm leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
-                {f.desc}
-              </p>
-            </div>
+            </SectionReveal>
           ))}
         </div>
       </div>
@@ -582,41 +570,62 @@ function Testimonials() {
   ];
 
   return (
-    <section className="py-32 bg-bg-primary">
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-5">TESTIMONIALS</p>
-          <h2 className="text-display-lg tracking-tighter">What Our Customers Say.</h2>
-        </div>
+    <section
+      className="bg-bg-primary"
+      style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
+    >
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        <SectionReveal>
+          <div className="text-center" style={{ marginBottom: 'clamp(48px, 6vw, 72px)' }}>
+            <p className="eyebrow text-brand-gold mb-4">TESTIMONIALS</p>
+            <h2 className="text-display-lg tracking-tighter">What Our Customers Say.</h2>
+          </div>
+        </SectionReveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {testimonials.map((t) => (
-            <div
-              key={t.name}
-              className="glass-elite luxury-border rounded-[28px] p-10 card-hover group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/[0.04] blur-[60px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-              
-              <div className="flex gap-1 mb-6 relative z-10">
-                {Array.from({ length: t.rating }).map((_, i) => (
-                  <span key={i} className="text-brand-gold text-lg" style={{ textShadow: '0 0 10px rgba(197,160,89,0.4)' }}>★</span>
-                ))}
-              </div>
-              <p className="text-text-primary text-base leading-relaxed mb-8 font-body italic relative z-10">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="w-12 h-12 rounded-full gold-gradient flex items-center justify-center text-sm font-bold text-bg-primary">
-                  {t.initials}
+        <div
+          className="grid grid-cols-1 md:grid-cols-3"
+          style={{ gap: 'clamp(24px, 3vw, 36px)' }}
+        >
+          {testimonials.map((t, i) => (
+            <SectionReveal key={t.name} delay={i * 0.1}>
+              <div
+                className="glass-elite luxury-border rounded-[28px] card-hover group relative overflow-hidden"
+                style={{ padding: 'clamp(28px, 3vw, 40px)' }}
+              >
+                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/[0.04] blur-[60px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+
+                {/* Stars */}
+                <div className="flex gap-1 relative z-10" style={{ marginBottom: 20 }}>
+                  {Array.from({ length: t.rating }).map((_, i) => (
+                    <span key={i} className="text-brand-gold text-lg" style={{ textShadow: '0 0 10px rgba(197,160,89,0.4)' }}>★</span>
+                  ))}
                 </div>
-                <div>
-                  <p className="font-display font-bold text-text-primary text-base">{t.name}</p>
-                  <p className="text-text-muted text-sm mt-0.5">
-                    {t.car} · {t.city}
-                  </p>
+
+                {/* Quote */}
+                <p
+                  className="text-text-primary font-body italic relative z-10"
+                  style={{ lineHeight: 1.78, marginBottom: 24, maxWidth: '38ch', fontSize: 'clamp(14px, 1.3vw, 16px)' }}
+                >
+                  &ldquo;{t.quote}&rdquo;
+                </p>
+
+                {/* Reviewer */}
+                <div
+                  className="flex items-center relative z-10"
+                  style={{ gap: 14, paddingTop: 20, borderTop: '1px solid rgba(232,232,232,0.08)' }}
+                >
+                  <div className="w-12 h-12 rounded-full gold-gradient flex items-center justify-center text-sm font-bold text-bg-primary flex-shrink-0">
+                    {t.initials}
+                  </div>
+                  <div>
+                    <p className="font-display font-bold text-text-primary text-base">{t.name}</p>
+                    <p className="text-text-muted text-sm mt-0.5">
+                      {t.car} · {t.city}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
+            </SectionReveal>
           ))}
         </div>
       </div>
@@ -645,30 +654,58 @@ function BrandGrid() {
   ];
 
   return (
-    <section className="py-32 bg-[#080808] border-y border-white/5">
-      <div className="max-w-[1400px] mx-auto px-6">
-        <div className="text-center mb-16">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-5">POPULAR BRANDS</p>
-          <h2 className="text-display-lg tracking-tighter">Explore by Brand.</h2>
-        </div>
+    <section
+      className="bg-[#080808] border-y border-white/5"
+      style={{ padding: 'clamp(64px, 8vw, 112px) 0' }}
+    >
+      <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
+        <SectionReveal>
+          <div className="text-center" style={{ marginBottom: 'clamp(40px, 5vw, 64px)' }}>
+            <p className="eyebrow text-brand-gold mb-4">POPULAR BRANDS</p>
+            <h2 className="text-display-lg tracking-tighter">Explore by Brand.</h2>
+          </div>
+        </SectionReveal>
 
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-5">
-          {brandData.map((brand) => (
-            <Link href={`/browse?brand=${encodeURIComponent(brand.name)}`} key={brand.name}>
-              <div
-                className="glass-elite rounded-[20px] p-6 text-center transition-all duration-500 ease-luxury hover:luxury-border cursor-pointer card-hover group relative overflow-hidden"
-              >
-                <div className="absolute inset-0 bg-brand-gold/[0.03] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                
-                {/* Brand Monogram Logo */}
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center group-hover:border-brand-gold/30 group-hover:bg-brand-gold/[0.08] transition-all duration-700 relative z-10">
-                  <span className={`font-display font-black gold-text-gradient tracking-tight ${brand.monogram.length > 2 ? 'text-base' : brand.monogram.length > 1 ? 'text-xl' : 'text-2xl'}`}>
-                    {brand.monogram}
-                  </span>
+        <div
+          className="grid grid-cols-3 md:grid-cols-5"
+          style={{ gap: 'clamp(16px, 2vw, 24px)' }}
+        >
+          {brandData.map((brand, i) => (
+            <SectionReveal key={brand.name} delay={i * 0.03}>
+              <Link href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
+                <div
+                  className="glass-elite rounded-[20px] text-center transition-all duration-500 group relative overflow-hidden cursor-pointer"
+                  style={{ padding: 'clamp(20px, 2.5vw, 28px)', borderRadius: 16 }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.background = 'rgba(91,45,134,0.85)';
+                    el.style.transform = 'scale(1.06)';
+                    el.style.boxShadow = '0 8px 24px rgba(91,45,134,0.2)';
+                    el.style.color = '#fff';
+                  }}
+                  onMouseLeave={(e) => {
+                    const el = e.currentTarget as HTMLElement;
+                    el.style.background = '';
+                    el.style.transform = 'scale(1)';
+                    el.style.boxShadow = '';
+                    el.style.color = '';
+                  }}
+                >
+                  {/* Letter circle */}
+                  <div
+                    className="mx-auto mb-3 rounded-2xl flex items-center justify-center relative z-10 transition-colors duration-500"
+                    style={{ width: 48, height: 48, marginBottom: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+                  >
+                    <span className={`font-display font-black gold-text-gradient tracking-tight ${brand.monogram.length > 2 ? 'text-base' : brand.monogram.length > 1 ? 'text-xl' : 'text-2xl'}`}>
+                      {brand.monogram}
+                    </span>
+                  </div>
+                  <p className="text-sm font-semibold tracking-wide text-text-muted group-hover:text-white transition-colors duration-500 relative z-10" style={{ marginTop: 8, fontSize: 13 }}>
+                    {brand.short}
+                  </p>
                 </div>
-                <p className="text-sm font-semibold tracking-wide text-text-muted group-hover:text-brand-gold transition-colors duration-500 relative z-10">{brand.short}</p>
-              </div>
-            </Link>
+              </Link>
+            </SectionReveal>
           ))}
         </div>
       </div>
@@ -679,31 +716,64 @@ function BrandGrid() {
 /* ===================== CTA SECTION ===================== */
 function CTASection() {
   return (
-    <section className="py-40 relative overflow-hidden">
-      <div className="absolute inset-0 bg-bg-primary" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-brand-gold/10 blur-[120px] rounded-full pointer-events-none" />
-      
-      <div className="max-w-[1400px] mx-auto px-6 text-center relative z-10">
-        <div className="glass-elite luxury-border p-16 rounded-[40px] w-full max-w-4xl mx-auto">
-          <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-5">GET STARTED</p>
-          <h2 className="text-display-lg mb-6 leading-tight tracking-tighter">Ready to Find Your<br />Perfect Car?</h2>
-          <p className="text-text-muted text-lg mb-12 max-w-2xl mx-auto font-body leading-relaxed">
-            Join 2,00,000+ happy customers who found their dream car on Spinny. 
-            Experience a new standard of trust and quality.
-          </p>
-          <div className="flex gap-6 justify-center flex-wrap items-center">
-            <Link href="/browse">
-              <MagneticButton variant="gold" className="px-10 py-5 text-base shadow-[0_0_50px_rgba(201,168,76,0.3)]">
-                Browse 10,000+ Cars →
-              </MagneticButton>
-            </Link>
-            <Link href="/sell">
-              <MagneticButton variant="outline" className="px-10 py-5 text-base border-white/20">
-                Sell Your Car
-              </MagneticButton>
-            </Link>
+    <section
+      className="relative overflow-hidden"
+      style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
+    >
+      {/* Purple gradient background */}
+      <div
+        className="absolute inset-0 cta-purple-section"
+        style={{ zIndex: 0 }}
+      />
+      {/* Animated glow overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          zIndex: 1,
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(123,79,171,0.4) 0%, transparent 70%)',
+        }}
+      />
+
+      <div
+        className="max-w-[1280px] mx-auto text-center relative"
+        style={{ padding: '0 clamp(20px, 5vw, 80px)', zIndex: 2 }}
+      >
+        <SectionReveal>
+          <div style={{ maxWidth: 720, margin: '0 auto' }}>
+            <p className="eyebrow text-white/70 mb-4">GET STARTED</p>
+            <h2
+              className="text-display-lg leading-tight tracking-tighter text-white"
+              style={{ marginBottom: 'clamp(16px, 2vw, 24px)' }}
+            >
+              Ready to Find Your<br />Perfect Car?
+            </h2>
+            <p
+              className="text-white/70 text-lg mx-auto"
+              style={{ maxWidth: '52ch', lineHeight: 1.72, marginBottom: 'clamp(32px, 4vw, 48px)' }}
+            >
+              Join 2,00,000+ happy customers who found their dream car on Spinny.
+              Experience a new standard of trust and quality.
+            </p>
+            <div className="flex flex-wrap justify-center items-center" style={{ gap: 16 }}>
+              <Link href="/browse">
+                <MagneticButton
+                  variant="gold"
+                  className="px-10 py-5 text-base shadow-[0_0_50px_rgba(197,160,89,0.4)] hover:shadow-[0_0_80px_rgba(197,160,89,0.6)] transition-shadow duration-500"
+                >
+                  Browse 10,000+ Cars →
+                </MagneticButton>
+              </Link>
+              <Link href="/sell">
+                <MagneticButton
+                  variant="outline"
+                  className="px-10 py-5 text-base border-white/30 text-white hover:bg-white/10 hover:border-white/60"
+                >
+                  Sell Your Car
+                </MagneticButton>
+              </Link>
+            </div>
           </div>
-        </div>
+        </SectionReveal>
       </div>
     </section>
   );
@@ -711,49 +781,21 @@ function CTASection() {
 
 /* ===================== HOME PAGE ===================== */
 export default function HomePage() {
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-    const reveals = document.querySelectorAll('.reveal');
-    reveals.forEach((el) => {
-      gsap.from(el, {
-        opacity: 0,
-        y: 40,
-        duration: 1.2,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: el,
-          start: 'top 90%',
-          toggleActions: 'play none none none',
-        },
-      });
-    });
-  }, []);
-
   return (
     <main className="bg-bg-primary">
       <HeroSection />
-      <div className="reveal">
-        <MarqueeStrip />
-      </div>
-      <div className="reveal">
-        <TrustNumbers />
-      </div>
+      <MarqueeStrip />
+      <TrustNumbers />
+      <hr className="section-divider" />
       <HowItWorks />
-      <div className="reveal">
-        <FeaturedCars />
-      </div>
-      <div className="reveal">
-        <SpinnyAssured />
-      </div>
-      <div className="reveal">
-        <Testimonials />
-      </div>
-      <div className="reveal">
-        <BrandGrid />
-      </div>
-      <div className="reveal">
-        <CTASection />
-      </div>
+      <hr className="section-divider" />
+      <FeaturedCars />
+      <hr className="section-divider" />
+      <SpinnyAssured />
+      <Testimonials />
+      <hr className="section-divider" />
+      <BrandGrid />
+      <CTASection />
     </main>
   );
 }

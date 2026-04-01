@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { motion } from 'framer-motion';
 import { SlidersHorizontal, X, ChevronDown } from 'lucide-react';
 import { cars, brands, bodyTypes, fuelTypes, transmissionTypes } from '@/lib/data/cars';
 import { CarCard } from '@/components/ui/CarCard';
@@ -10,7 +11,7 @@ import { formatPrice } from '@/lib/utils/formatters';
 
 export default function BrowsePage() {
   return (
-    <Suspense fallback={<div className="pt-[80px] min-h-screen bg-bg-primary flex items-center justify-center"><p className="text-text-muted">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-bg-primary flex items-center justify-center"><p className="text-text-muted">Loading...</p></div>}>
       <BrowseContent />
     </Suspense>
   );
@@ -27,7 +28,6 @@ function BrowseContent() {
   const [sortBy, setSortBy] = useState('');
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
-  // Read brand from URL query param (from brand grid clicks)
   useEffect(() => {
     const brandParam = searchParams.get('brand');
     if (brandParam && brands.includes(brandParam)) {
@@ -42,26 +42,15 @@ function BrowseContent() {
 
   const filteredCars = useMemo(() => {
     let result = [...cars];
-
-    if (selectedBrands.length > 0) {
-      result = result.filter((c) => selectedBrands.includes(c.make));
-    }
-    if (selectedBodyTypes.length > 0) {
-      result = result.filter((c) => selectedBodyTypes.includes(c.bodyType));
-    }
-    if (selectedFuel.length > 0) {
-      result = result.filter((c) => selectedFuel.includes(c.fuelType));
-    }
-    if (selectedTransmission.length > 0) {
-      result = result.filter((c) => selectedTransmission.includes(c.transmission));
-    }
+    if (selectedBrands.length > 0) result = result.filter((c) => selectedBrands.includes(c.make));
+    if (selectedBodyTypes.length > 0) result = result.filter((c) => selectedBodyTypes.includes(c.bodyType));
+    if (selectedFuel.length > 0) result = result.filter((c) => selectedFuel.includes(c.fuelType));
+    if (selectedTransmission.length > 0) result = result.filter((c) => selectedTransmission.includes(c.transmission));
     result = result.filter((c) => c.price >= priceRange[0] && c.price <= priceRange[1]);
-
     if (sortBy === 'price-low') result.sort((a, b) => a.price - b.price);
     if (sortBy === 'price-high') result.sort((a, b) => b.price - a.price);
     if (sortBy === 'year-new') result.sort((a, b) => b.year - a.year);
     if (sortBy === 'mileage-low') result.sort((a, b) => a.mileage - b.mileage);
-
     return result;
   }, [selectedBrands, selectedBodyTypes, selectedFuel, selectedTransmission, priceRange, sortBy]);
 
@@ -204,23 +193,42 @@ function BrowseContent() {
     </div>
   );
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 40 },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    show: (i: any) => ({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, delay: (i as number) * 0.06, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    }),
+  };
+
   return (
     <div className="min-h-screen bg-bg-primary relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-gold/[0.03] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-      
-      <div className="max-w-[1400px] mx-auto px-6 py-16">
+
+      <div
+        className="max-w-[1280px] mx-auto"
+        style={{ padding: 'clamp(48px, 6vw, 80px) clamp(20px, 5vw, 80px) clamp(64px, 8vw, 100px)' }}
+      >
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16">
+        <div
+          className="flex flex-col md:flex-row md:items-end justify-between gap-10"
+          style={{ marginBottom: 'clamp(32px, 4vw, 56px)' }}
+        >
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-6 opacity-60">
                <div className="w-12 h-[1px] bg-brand-gold/50" />
                <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">BROWSE CARS</p>
             </div>
-            <h1 className="text-display-lg tracking-tighter leading-tight mb-6">
+            <h1 className="text-display-lg tracking-tighter leading-tight mb-4">
                Find Your <br />
                <span className="italic font-display gold-text-gradient">Perfect Car</span><span className="text-brand-gold">.</span>
             </h1>
-            <div className="flex items-center gap-5 text-[11px] font-mono text-text-muted uppercase tracking-wider opacity-60">
+            <div
+              className="flex items-center gap-5 text-[11px] font-mono text-text-muted uppercase tracking-wider opacity-60"
+              style={{ marginBottom: 'clamp(20px, 2.5vw, 32px)' }}
+            >
               <span className="flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
                 {filteredCars.length} cars found
@@ -290,26 +298,35 @@ function BrowseContent() {
 
         <div className="flex gap-10 items-start">
           {/* Sidebar Filters */}
-          <aside className="hidden lg:block w-64 xl:w-72 flex-shrink-0 sticky top-[100px]">
+          <aside className="hidden lg:block w-64 xl:w-72 flex-shrink-0 sticky top-[80px]">
             <div className="glass-elite luxury-border rounded-[28px] p-8 shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
               <div className="flex items-center justify-between mb-10">
                 <h2 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold">Filters</h2>
                 <div className="w-1.5 h-1.5 rounded-full bg-brand-gold" />
               </div>
-              
               {renderFilters()}
             </div>
           </aside>
 
           {/* Results Grid */}
           <div className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div
+              className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+              style={{ gap: 'clamp(20px, 2.5vw, 32px)' }}
+            >
               {loading
                 ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
                 : filteredCars.map((car, i) => (
-                    <div key={car.id} className="animate-in fade-in slide-in-from-bottom-6 duration-700 ease-luxury fill-mode-both" style={{ animationDelay: `${i * 80}ms` }}>
+                    <motion.div
+                      key={car.id}
+                      custom={i}
+                      variants={cardVariants}
+                      initial="hidden"
+                      whileInView="show"
+                      viewport={{ once: true, amount: 0.1 }}
+                    >
                       <CarCard car={car} />
-                    </div>
+                    </motion.div>
                   ))}
             </div>
 
@@ -317,8 +334,8 @@ function BrowseContent() {
               <div className="text-center py-24 glass-elite luxury-border rounded-[28px] max-w-2xl mx-auto">
                 <p className="text-display-md text-text-muted mb-4 opacity-40">No Cars Found</p>
                 <p className="text-text-muted text-sm mb-8">Try adjusting your filters to see more results.</p>
-                <button 
-                  onClick={clearAll} 
+                <button
+                  onClick={clearAll}
                   className="px-8 py-4 bg-brand-gold text-bg-primary text-[12px] font-bold uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all"
                 >
                   Clear All Filters

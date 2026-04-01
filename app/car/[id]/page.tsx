@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import gsap from 'gsap';
@@ -11,6 +11,7 @@ import { useShortlistStore } from '@/lib/store/shortlistStore';
 import { formatPrice, formatMileage, formatEMI } from '@/lib/utils/formatters';
 import { calculateEMI } from '@/lib/utils/emi';
 import { CarCard } from '@/components/ui/CarCard';
+import { SectionReveal } from '@/components/ui/SectionReveal';
 
 export default function CarDetailPage() {
   const { id } = useParams();
@@ -80,13 +81,40 @@ export default function CarDetailPage() {
     { icon: <Palette size={16} />, label: 'Color', value: car.color },
   ];
 
+  // 3D tilt state for main image
+  const [imgTilt, setImgTilt] = useState({ x: 0, y: 0 });
+  const [imgGlow, setImgGlow] = useState({ x: 50, y: 50 });
+  const [imgHovered, setImgHovered] = useState(false);
+  const isTouchDevice = typeof window !== 'undefined' && 'ontouchstart' in window;
+
+  const handleImgMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (isTouchDevice) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = rect.width / 2, cy = rect.height / 2;
+    setImgTilt({ x: -((y - cy) / cy) * 6, y: ((x - cx) / cx) * 6 });
+    setImgGlow({ x: (x / rect.width) * 100, y: (y / rect.height) * 100 });
+  }, [isTouchDevice]);
+
+  const handleImgMouseLeave = useCallback(() => {
+    setImgHovered(false);
+    setImgTilt({ x: 0, y: 0 });
+  }, []);
+
   return (
-    <div className="pt-[80px] min-h-screen bg-bg-primary relative overflow-hidden">
+    <div className="min-h-screen bg-bg-primary relative overflow-hidden" style={{ paddingTop: 80 }}>
       <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-brand-gold/[0.02] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       
-      <div className="max-w-[1440px] mx-auto px-6 py-10">
+      <div
+        className="max-w-[1280px] mx-auto"
+        style={{ padding: 'clamp(32px, 4vw, 56px) clamp(20px, 5vw, 80px)' }}
+      >
         {/* Breadcrumb */}
-        <div className="flex items-center gap-3 mb-8 text-[11px] font-semibold uppercase tracking-[0.2em] text-text-muted/60">
+        <div
+          className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-text-muted/60"
+          style={{ marginBottom: 'clamp(20px, 2.5vw, 32px)' }}
+        >
           <Link href="/browse" className="hover:text-brand-gold transition-colors">Browse</Link>
           <div className="w-1 h-1 rounded-full bg-brand-gold/30" />
           <span className="text-text-primary/40">{car.make}</span>
@@ -94,16 +122,36 @@ export default function CarDetailPage() {
           <span className="text-brand-gold">{car.model}</span>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-12">
+        <div className="flex flex-col lg:flex-row" style={{ gap: 'clamp(40px, 5vw, 72px)' }}>
           {/* Left Column */}
           <div className="flex-1">
             {/* Image Gallery */}
-            <div className="mb-10">
+            <div style={{ marginBottom: 'clamp(24px, 3vw, 40px)' }}>
+              {/* Main image with 3D tilt */}
               <div
                 ref={mainImgRef}
-                className="relative aspect-[16/9] rounded-[28px] overflow-hidden cursor-pointer group shadow-[0_40px_100px_rgba(0,0,0,0.8)] glass-elite p-[1px]"
+                className="relative overflow-hidden cursor-pointer group shadow-[0_40px_100px_rgba(0,0,0,0.8)] glass-elite"
+                style={{
+                  aspectRatio: '16/9',
+                  borderRadius: 16,
+                  transition: 'transform 0.15s ease-out',
+                  transform: isTouchDevice ? 'none' : `perspective(1000px) rotateX(${imgTilt.x}deg) rotateY(${imgTilt.y}deg)`,
+                }}
                 onClick={() => setFullScreen(true)}
+                onMouseMove={handleImgMouseMove}
+                onMouseEnter={() => setImgHovered(true)}
+                onMouseLeave={handleImgMouseLeave}
               >
+                {/* Specular highlight on image */}
+                {imgHovered && (
+                  <div
+                    className="absolute inset-0 pointer-events-none z-20"
+                    style={{
+                      background: `radial-gradient(circle at ${imgGlow.x}% ${imgGlow.y}%, rgba(255,255,255,0.1) 0%, transparent 55%)`,
+                      borderRadius: 16,
+                    }}
+                  />
+                )}
                 <div className="absolute inset-0 z-10 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.4)]" />
                 <div className="absolute top-5 left-5 z-20 flex gap-2">
                    {car.assured && (
@@ -159,16 +207,24 @@ export default function CarDetailPage() {
             </div>
 
             {/* Tab Content */}
-            <div className="mb-14">
+            <div style={{ marginBottom: 'clamp(32px, 4vw, 56px)' }}>
               {activeTab === 'overview' && (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 animate-in fade-in slide-in-from-bottom-6 duration-700">
+                <div
+                  className="grid grid-cols-2 lg:grid-cols-3 animate-in fade-in slide-in-from-bottom-6 duration-700"
+                  style={{ gap: 16 }}
+                >
                   {specs.map((s) => (
-                    <div key={s.label} className="glass-elite luxury-border rounded-[20px] p-7 group hover:bg-white/[0.02] transition-colors duration-500">
-                      <div className="flex items-center gap-3 text-brand-gold/40 mb-4 group-hover:text-brand-gold transition-colors">
+                    <div
+                      key={s.label}
+                      className="spec-card group hover:bg-white/[0.02] transition-all duration-500"
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(91,45,134,0.15)'; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = ''; }}
+                    >
+                      <div className="flex items-center gap-2 text-brand-gold/40 group-hover:text-brand-gold transition-colors">
                         {s.icon}
                         <span className="text-[11px] font-semibold uppercase tracking-[0.2em]">{s.label}</span>
                       </div>
-                      <span className="text-xl font-mono text-text-primary tracking-tight font-bold">{s.value}</span>
+                      <span className="text-lg font-mono text-text-primary tracking-tight font-bold">{s.value}</span>
                     </div>
                   ))}
                 </div>
@@ -234,7 +290,10 @@ export default function CarDetailPage() {
             </div>
 
             {/* EMI Calculator */}
-            <div className="glass-elite luxury-border rounded-[28px] p-10 lg:p-14 mb-14 overflow-hidden relative">
+            <div
+              className="glass-elite luxury-border rounded-[28px] overflow-hidden relative"
+              style={{ padding: 'clamp(24px, 3vw, 48px)', marginBottom: 'clamp(32px, 4vw, 56px)' }}
+            >
               <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/[0.04] blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none" />
               
               <div className="max-w-3xl">
@@ -287,16 +346,27 @@ export default function CarDetailPage() {
 
             {/* Similar Cars */}
             {similarCars.length > 0 && (
-              <div>
-                <div className="flex items-center gap-4 mb-8">
-                   <div className="w-12 h-[1px] bg-brand-gold/30" />
-                   <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">SIMILAR CARS</h3>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {similarCars.map((c) => (
-                    <CarCard key={c.id} car={c} />
-                  ))}
-                </div>
+              <div
+                style={{
+                  marginTop: 'clamp(64px, 8vw, 112px)',
+                  paddingTop: 'clamp(48px, 6vw, 80px)',
+                  borderTop: '1px solid rgba(232,232,232,0.08)',
+                }}
+              >
+                <SectionReveal>
+                  <div className="flex items-center gap-4 mb-8">
+                     <div className="w-12 h-[1px] bg-brand-gold/30" />
+                     <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">SIMILAR CARS</h3>
+                  </div>
+                  <div
+                    className="grid grid-cols-1 sm:grid-cols-2"
+                    style={{ gap: 'clamp(16px, 2vw, 24px)' }}
+                  >
+                    {similarCars.map((c) => (
+                      <CarCard key={c.id} car={c} />
+                    ))}
+                  </div>
+                </SectionReveal>
               </div>
             )}
           </div>
