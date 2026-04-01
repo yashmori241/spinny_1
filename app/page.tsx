@@ -17,15 +17,7 @@ function HeroSection() {
   const heroRef = useRef<HTMLDivElement>(null);
   const scrollIndicatorRef = useRef<HTMLDivElement>(null);
   const [videoError, setVideoError] = useState(false);
-  const [HeroCanvas, setHeroCanvas] = useState<React.ComponentType | null>(null);
   const shouldReduceMotion = useReducedMotion();
-
-  // Lazy-load Three.js canvas
-  useEffect(() => {
-    import('@/components/ui/HeroCanvas').then((mod) => {
-      setHeroCanvas(() => mod.HeroCanvas);
-    }).catch(() => {/* optional — silently skip */});
-  }, []);
 
   // Scroll indicator fade
   useEffect(() => {
@@ -93,13 +85,6 @@ function HeroSection() {
           zIndex: 2,
         }}
       />
-
-      {/* ── 3D Hero Canvas (desktop only) ── */}
-      {HeroCanvas && (
-        <div style={{ zIndex: 3 }}>
-          <HeroCanvas />
-        </div>
-      )}
 
       {/* ── Text Content ── */}
       <div className="relative h-full flex items-center" style={{ zIndex: 4 }}>

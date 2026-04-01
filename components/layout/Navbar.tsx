@@ -78,12 +78,7 @@ export function Navbar() {
               <div className="w-2 h-2 rounded-full bg-brand-gold shadow-[0_0_15px_rgba(197,160,89,0.9)]" />
               <div className="absolute inset-0 rounded-full border border-brand-gold/40 animate-ping opacity-10" />
             </div>
-            <span
-              className="font-display text-lg font-black text-text-primary tracking-[0.3em] transition-all duration-700"
-              style={{
-                backgroundImage: 'linear-gradient(90deg, currentColor, currentColor)',
-              }}
-            >
+            <span className="font-display text-lg font-black text-text-primary tracking-[0.3em] transition-all duration-700">
               SPINNY
             </span>
           </Link>
