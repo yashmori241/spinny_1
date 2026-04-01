@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
@@ -42,8 +43,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`} suppressHydrationWarning>
-      <body className="font-body bg-bg-primary text-text-primary antialiased" suppressHydrationWarning>
+    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+      <body className="font-body bg-bg-main text-text-primary antialiased" suppressHydrationWarning>
         <LenisProvider>
           <CustomCursor />
           <ScrollProgress />

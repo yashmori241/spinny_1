@@ -11,7 +11,7 @@ import { formatPrice } from '@/lib/utils/formatters';
 
 export default function BrowsePage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-bg-primary flex items-center justify-center"><p className="text-text-muted">Loading...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-bg-main flex items-center justify-center"><p className="text-text-muted">Loading...</p></div>}>
       <BrowseContent />
     </Suspense>
   );
@@ -76,7 +76,7 @@ function BrowseContent() {
       {/* Price Range */}
       <div className="pb-8 border-b border-white/5">
         <div className="flex items-center justify-between mb-6">
-           <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold">Price Range</h3>
+           <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-purple">Price Range</h3>
         </div>
         <div className="space-y-6">
           <div className="space-y-3">
@@ -110,22 +110,22 @@ function BrowseContent() {
 
       {/* Brand */}
       <div className="pb-8 border-b border-white/5">
-        <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-6">Brand</h3>
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-purple mb-6">Brand</h3>
         <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
           {brands.map((brand) => (
             <label key={brand} className="flex items-center justify-between cursor-pointer group py-0.5">
               <span className={`text-[12px] font-semibold transition-all duration-300
-                ${selectedBrands.includes(brand) ? 'text-brand-gold' : 'text-text-muted group-hover:text-text-primary'}`}>
+                ${selectedBrands.includes(brand) ? 'text-brand-purple' : 'text-text-muted group-hover:text-text-primary'}`}>
                 {brand}
               </span>
               <div className={`w-4 h-4 rounded-full border transition-all duration-300 flex items-center justify-center
-                ${selectedBrands.includes(brand) ? 'border-brand-gold bg-brand-gold/20' : 'border-white/10 group-hover:border-white/30'}`}>
+                ${selectedBrands.includes(brand) ? 'border-brand-purple bg-brand-purple/20' : 'border-border group-hover:border-text-muted'}`}>
                 <input
                   type="checkbox" checked={selectedBrands.includes(brand)}
                   onChange={() => toggleFilter(selectedBrands, setSelectedBrands, brand)}
                   className="hidden"
                 />
-                {selectedBrands.includes(brand) && <div className="w-1.5 h-1.5 rounded-full bg-brand-gold" />}
+                {selectedBrands.includes(brand) && <div className="w-1.5 h-1.5 rounded-full bg-brand-purple" />}
               </div>
             </label>
           ))}
@@ -134,7 +134,7 @@ function BrowseContent() {
 
       {/* Body Type */}
       <div className="pb-8 border-b border-white/5">
-        <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-6">Body Type</h3>
+        <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-purple mb-6">Body Type</h3>
         <div className="flex flex-wrap gap-2">
           {bodyTypes.map((type) => (
             <button
@@ -142,8 +142,8 @@ function BrowseContent() {
               onClick={() => toggleFilter(selectedBodyTypes, setSelectedBodyTypes, type)}
               className={`px-4 py-2 text-[11px] font-semibold rounded-full border transition-all duration-500
                 ${selectedBodyTypes.includes(type)
-                  ? 'border-brand-gold bg-brand-gold/10 text-brand-gold'
-                  : 'border-white/5 text-text-muted hover:border-white/20'
+                  ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
+                  : 'border-border text-text-muted hover:border-text-primary'
                 }`}
             >
               {type}
@@ -154,7 +154,7 @@ function BrowseContent() {
 
       {/* Fuel Type */}
       <div className="pb-8 border-b border-white/5">
-         <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-6">Fuel Type</h3>
+         <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-purple mb-6">Fuel Type</h3>
          <div className="flex flex-wrap gap-2">
            {fuelTypes.map((type) => (
              <button
@@ -162,8 +162,8 @@ function BrowseContent() {
                onClick={() => toggleFilter(selectedFuel, setSelectedFuel, type)}
                className={`px-4 py-2 text-[11px] font-semibold rounded-full border transition-all duration-500
                  ${selectedFuel.includes(type)
-                   ? 'border-brand-gold bg-brand-gold/10 text-brand-gold'
-                   : 'border-white/5 text-text-muted hover:border-white/20'
+                   ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
+                   : 'border-border text-text-muted hover:border-text-primary'
                  }`}
              >
                {type}
@@ -173,7 +173,7 @@ function BrowseContent() {
       </div>
 
       <div className="pb-2">
-         <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-6">Transmission</h3>
+         <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-purple mb-6">Transmission</h3>
          <div className="flex flex-wrap gap-2">
            {transmissionTypes.map((type) => (
              <button
@@ -181,8 +181,8 @@ function BrowseContent() {
                onClick={() => toggleFilter(selectedTransmission, setSelectedTransmission, type)}
                className={`px-4 py-2 text-[11px] font-semibold rounded-full border transition-all duration-500
                  ${selectedTransmission.includes(type)
-                   ? 'border-brand-gold bg-brand-gold/10 text-brand-gold'
-                   : 'border-white/5 text-text-muted hover:border-white/20'
+                   ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
+                   : 'border-border text-text-muted hover:border-text-primary'
                  }`}
              >
                {type}
@@ -204,8 +204,8 @@ function BrowseContent() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-gold/[0.03] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+    <div className="min-h-screen bg-bg-main relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-brand-purple/[0.03] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
       <div
         className="max-w-[1280px] mx-auto"
@@ -218,19 +218,19 @@ function BrowseContent() {
         >
           <div className="max-w-2xl">
             <div className="flex items-center gap-4 mb-6 opacity-60">
-               <div className="w-12 h-[1px] bg-brand-gold/50" />
-               <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">BROWSE CARS</p>
+               <div className="w-12 h-[1px] bg-brand-purple/50" />
+               <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-purple">BROWSE CARS</p>
             </div>
-            <h1 className="text-display-lg tracking-tighter leading-tight mb-4">
+            <h1 className="text-display-lg tracking-tighter leading-tight mb-4 text-text-primary">
                Find Your <br />
-               <span className="italic font-display gold-text-gradient">Perfect Car</span><span className="text-brand-gold">.</span>
+               <span className="italic font-display text-brand-purple">Perfect Car</span><span className="text-brand-purple">.</span>
             </h1>
             <div
               className="flex items-center gap-5 text-[11px] font-mono text-text-muted uppercase tracking-wider opacity-60"
               style={{ marginBottom: 'clamp(20px, 2.5vw, 32px)' }}
             >
               <span className="flex items-center gap-2">
-                <div className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
+                <div className="w-1.5 h-1.5 rounded-full bg-brand-purple animate-pulse" />
                 {filteredCars.length} cars found
               </span>
             </div>

@@ -32,7 +32,7 @@ export function CarCard({ car }: CarCardProps) {
     <Link href={`/car/${car.id}`} className="block group">
       <TiltCard className="card-shimmer-top rounded-[24px] overflow-hidden h-full">
         <div
-          className="glass-elite luxury-border rounded-[24px] overflow-hidden transition-all duration-500 ease-out relative h-full"
+          className="bg-bg-main border border-border rounded-[24px] overflow-hidden transition-all duration-500 ease-out relative h-full"
           style={{
             boxShadow: '0 2px 12px rgba(91,45,134,0.08)',
           }}
@@ -59,7 +59,7 @@ export function CarCard({ car }: CarCardProps) {
 
             {/* Bottom gradient */}
             <div className="absolute inset-0 pointer-events-none"
-              style={{ background: 'linear-gradient(to top, rgba(28,28,28,0.6) 0%, transparent 50%)' }} />
+              style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%)' }} />
 
             {/* Badges */}
             <div className="absolute top-3 left-3 flex flex-col gap-2">
@@ -77,8 +77,7 @@ export function CarCard({ car }: CarCardProps) {
               )}
               {car.trending && (
                 <div
-                  className="text-[10px] font-bold uppercase tracking-[0.2em] rounded-full px-3 py-1"
-                  style={{ background: '#C5A059', color: '#1C1C1C' }}
+                  className="text-[10px] font-bold uppercase tracking-[0.2em] rounded-full px-3 py-1 bg-brand-gold text-bg-main"
                 >
                   Trending
                 </div>
@@ -96,7 +95,7 @@ export function CarCard({ car }: CarCardProps) {
               <Heart
                 size={16}
                 className={`transition-all duration-500 ${
-                  mounted && liked ? 'fill-current text-white scale-110' : 'text-white/50 group-hover/heart:text-bg-primary'
+                  mounted && liked ? 'fill-current text-white scale-110' : 'text-white/80 group-hover/heart:text-brand-purple'
                 }`}
               />
             </button>
@@ -106,9 +105,9 @@ export function CarCard({ car }: CarCardProps) {
           <div style={{ padding: 'clamp(16px, 2vw, 24px)' }} className="relative">
             {/* Name */}
             <div className="mb-2">
-              <p className="text-[11px] font-mono font-bold text-brand-gold/60 uppercase tracking-[0.15em] mb-1">{car.year}</p>
+              <p className="text-[11px] font-mono font-bold text-brand-purple/60 uppercase tracking-[0.15em] mb-1">{car.year}</p>
               <h3
-                className="font-display font-black text-text-primary tracking-tight leading-tight group-hover:text-brand-gold transition-colors duration-500"
+                className="font-display font-black text-text-primary tracking-tight leading-tight group-hover:text-brand-purple transition-colors duration-500"
                 style={{ fontSize: 'clamp(15px, 1.4vw, 17px)', marginBottom: '8px' }}
               >
                 {car.make} <span className="opacity-60">{car.model}</span>
@@ -121,11 +120,11 @@ export function CarCard({ car }: CarCardProps) {
               style={{ marginTop: '12px', gap: '16px' }}
             >
               <div className="flex items-center gap-2">
-                <Gauge size={13} className="text-brand-gold/50" />
+                <Gauge size={13} className="text-brand-purple/50" />
                 <span>{formatMileage(car.mileage)}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Fuel size={13} className="text-brand-gold/50" />
+                <Fuel size={13} className="text-brand-purple/50" />
                 <span>{car.fuelType}</span>
               </div>
             </div>
@@ -137,7 +136,7 @@ export function CarCard({ car }: CarCardProps) {
             <div className="flex items-end justify-between">
               <div>
                 <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-text-muted/60 mb-1">Price</p>
-                <p className="text-xl font-display font-black tracking-tight gold-text-gradient">
+                <p className="text-xl font-display font-black tracking-tight text-text-primary">
                   {formatPrice(car.price)}
                 </p>
                 <p className="text-[10px] font-semibold text-text-subtle uppercase tracking-[0.15em] mt-1">EMI starts</p>
@@ -149,7 +148,7 @@ export function CarCard({ car }: CarCardProps) {
 
             {/* Book Now — slides up on hover */}
             <button
-              className="book-now-btn w-full mt-4 py-2.5 rounded-full border border-brand-gold/30 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-gold hover:bg-brand-gold hover:text-bg-primary transition-colors duration-300"
+              className="book-now-btn w-full mt-4 py-2.5 rounded-full border border-brand-purple/30 text-[11px] font-bold uppercase tracking-[0.15em] text-brand-purple hover:bg-brand-purple hover:text-white transition-colors duration-300"
               onClick={(e) => e.preventDefault()}
             >
               Book Now

@@ -10,15 +10,10 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
     ],
-    localPatterns: [
-      {
-        pathname: '/api/car-image/**',
-      },
-      {
-        pathname: '/api/car-image',
-      }
-    ],
   },
-};
+  turbopack: {
+    root: 'C:/Users/yashm/OneDrive/Desktop/MY AI PROJECT/prototype A/spinny',
+  },
+} as any;
 
 export default nextConfig;

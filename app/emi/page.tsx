@@ -18,7 +18,7 @@ export default function EMIPage() {
   const schedule = generateAmortization(principal, rate, tenure);
 
   return (
-    <div className="min-h-screen bg-bg-primary relative overflow-hidden">
+    <div className="min-h-screen bg-bg-main relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-brand-gold/[0.02] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       
       <div className="max-w-[1400px] mx-auto px-6 py-20">
@@ -38,7 +38,7 @@ export default function EMIPage() {
 
         {/* Calculator - Single Column Layout to prevent overlap */}
         <div className="max-w-3xl">
-          <div className="glass-elite p-10 lg:p-14 luxury-border rounded-[32px] relative overflow-hidden shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
+          <div className="bg-bg-soft p-10 lg:p-14 border border-border rounded-[32px] relative overflow-hidden shadow-[0_4px_30px_rgba(91,45,134,0.05)]">
              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-gold/[0.03] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
 
             <div className="space-y-14 relative z-10">
@@ -83,10 +83,10 @@ export default function EMIPage() {
               </div>
 
               {/* Results */}
-              <div className="flex flex-col md:flex-row gap-10 pt-12 border-t border-white/5 items-center">
+              <div className="flex flex-col md:flex-row gap-10 pt-12 border-t border-border items-center">
                 <div className="flex-1">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-text-muted/60 mb-3">Monthly EMI</p>
-                  <p className="text-5xl font-display font-black gold-text-gradient tracking-tighter">
+                  <p className="text-5xl font-display font-black text-brand-gold tracking-tighter">
                     ₹{emi.toLocaleString('en-IN')}
                   </p>
                 </div>
@@ -118,7 +118,7 @@ export default function EMIPage() {
                 </div>
               </div>
               
-              <button className="w-full py-5 bg-brand-gold text-bg-primary font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all duration-700">
+              <button className="w-full py-5 bg-brand-purple text-white font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_30px_rgba(91,45,134,0.3)] transition-all duration-700">
                  Apply for Car Loan
               </button>
             </div>
@@ -127,26 +127,26 @@ export default function EMIPage() {
 
         {/* Amortization Table */}
         <div className="w-full mt-20">
-           <div className="h-[1px] w-full bg-white/5 mb-16" />
+           <div className="h-[1px] w-full bg-border mb-16" />
            
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
               <div>
                  <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold mb-4">DETAILED BREAKDOWN</p>
-                 <h2 className="text-display-md tracking-tighter leading-tight">Amortization <span className="italic font-display">Schedule</span>.</h2>
+                 <h2 className="text-display-md tracking-tighter leading-tight text-text-primary">Amortization <span className="italic font-display">Schedule</span>.</h2>
               </div>
               <button onClick={() => setShowTable(!showTable)}
-                className="flex items-center gap-4 px-8 py-4 glass-elite border border-white/5 rounded-full text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold hover:border-brand-gold/30 transition-all duration-700 group">
+                className="flex items-center gap-4 px-8 py-4 bg-bg-soft border border-border rounded-full text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold hover:border-brand-gold/30 transition-all duration-700 group">
                 {showTable ? 'Hide Schedule' : 'Show Schedule'}
                 <ChevronDown size={16} className={`transition-transform duration-700 ease-luxury ${showTable ? 'rotate-180' : ''}`} />
               </button>
            </div>
 
           {showTable && (
-            <div className="glass-elite luxury-border rounded-[32px] p-8 lg:p-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
+            <div className="bg-bg-soft border border-border rounded-[32px] p-8 lg:p-12 animate-in fade-in slide-in-from-bottom-8 duration-700">
               <div className="overflow-x-auto custom-scrollbar">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-white/5">
+                    <tr className="border-b border-border">
                       <th className="py-6 text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted/50">Month</th>
                       <th className="py-6 text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted/50 text-right">Principal</th>
                       <th className="py-6 text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted/50 text-right">Interest</th>
@@ -155,7 +155,7 @@ export default function EMIPage() {
                   </thead>
                   <tbody className="font-mono text-sm tracking-tight">
                     {schedule.map((row) => (
-                      <tr key={row.month} className="border-b border-white/5 group hover:bg-white/[0.02] transition-colors duration-300">
+                      <tr key={row.month} className="border-b border-border group hover:bg-black/[0.02] transition-colors duration-300">
                         <td className="py-5 text-text-primary/50 font-semibold group-hover:text-brand-gold transition-colors">Month {row.month}</td>
                         <td className="py-5 text-right text-text-primary/80">{formatPrice(row.principal)}</td>
                         <td className="py-5 text-right text-brand-gold/50 group-hover:text-brand-gold/80 transition-colors">{formatPrice(row.interest)}</td>

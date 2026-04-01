@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Heart, GitCompareArrows, Menu, X } from 'lucide-react';
+import { Heart, GitCompareArrows, Menu, X, Sun, Moon } from 'lucide-react';
 import { useShortlistStore } from '@/lib/store/shortlistStore';
 import { useAuthStore } from '@/lib/store/authStore';
 
@@ -15,14 +15,31 @@ export function Navbar() {
   const shortlist = useShortlistStore((s) => s.shortlist);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
   useEffect(() => {
     setMounted(true);
+    if (typeof window !== 'undefined') {
+      if (document.documentElement.classList.contains('dark')) setTheme('dark');
+    }
     const handleScroll = () => {
       setScrolled(window.scrollY > 60);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const toggleTheme = () => {
+    if (theme === 'light') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('spinny-theme', 'dark');
+      setTheme('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('spinny-theme', 'light');
+      setTheme('light');
+    }
+  };
 
   // eslint-disable-next-line
   useEffect(() => {
@@ -58,13 +75,13 @@ export function Navbar() {
           backdropFilter: isScrolledOrNotHome ? 'blur(20px) saturate(180%)' : 'none',
           WebkitBackdropFilter: isScrolledOrNotHome ? 'blur(20px) saturate(180%)' : 'none',
           background: isScrolledOrNotHome
-            ? 'rgba(5,5,5,0.9)'
+            ? 'var(--bg-main)'
             : 'transparent',
           borderBottom: isScrolledOrNotHome
-            ? '1px solid rgba(91,45,134,0.12)'
+            ? '1px solid var(--border)'
             : '1px solid transparent',
           boxShadow: isScrolledOrNotHome
-            ? '0 4px 24px rgba(91,45,134,0.08)'
+            ? '0 4px 24px rgba(91,45,134,0.06)'
             : 'none',
         }}
       >
@@ -105,9 +122,16 @@ export function Navbar() {
 
           {/* Desktop Right */}
           <div className="hidden lg:flex items-center gap-5">
+            <button
+              onClick={toggleTheme}
+              className="p-2.5 text-text-muted hover:text-brand-purple transition-colors duration-300"
+              aria-label="Toggle Dark Mode"
+            >
+              {mounted && theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
             <Link
               href="/compare"
-              className="p-2.5 text-text-muted hover:text-brand-gold transition-colors duration-300"
+              className="p-2.5 text-text-muted hover:text-brand-purple transition-colors duration-300"
               data-cursor
             >
               <GitCompareArrows size={18} />
@@ -126,8 +150,8 @@ export function Navbar() {
             </Link>
             <Link
               href={isAuthenticated ? '/dashboard' : '/login'}
-              className="ml-3 px-7 py-2.5 bg-brand-gold text-bg-primary text-[11px] font-bold uppercase tracking-[0.15em] rounded-full
-                hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all duration-500 shadow-[0_10px_30px_rgba(0,0,0,0.3)]"
+              className="ml-3 px-7 py-2.5 bg-brand-purple text-white text-[11px] font-bold uppercase tracking-[0.15em] rounded-full
+                hover:shadow-[0_0_30px_rgba(91,45,134,0.4)] transition-all duration-500"
               data-cursor
             >
               {mounted ? (isAuthenticated ? 'Dashboard' : 'Sign In') : 'Sign In'}

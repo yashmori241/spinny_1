@@ -43,32 +43,32 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-bg-primary relative flex items-center justify-center overflow-hidden">
+    <div className="min-h-screen bg-bg-main relative flex items-center justify-center overflow-hidden">
       {/* Cinematic Backdrop */}
       <div className="absolute inset-0 z-0">
         <Image 
           src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=90" 
           alt="Luxury car background" 
           fill 
-          className="object-cover opacity-20 scale-110"
+          className="object-cover opacity-10 scale-110"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-bg-primary/50 via-transparent to-bg-primary" />
+        <div className="absolute inset-0 bg-gradient-to-b from-bg-main/50 via-transparent to-bg-main" />
       </div>
 
       {/* Login Card */}
       <div className="relative z-10 w-full max-w-[500px] px-6">
-        <div className="glass-elite luxury-border rounded-[32px] p-10 md:p-12 shadow-[0_40px_120px_rgba(0,0,0,0.8)]">
+        <div className="bg-bg-soft border border-border rounded-[32px] p-10 md:p-12 shadow-[0_10px_40px_rgba(91,45,134,0.05)]">
           {/* Header */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-3 mb-6 opacity-50">
-              <div className="w-8 h-[1px] bg-brand-gold/50" />
-              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.3em] text-brand-gold">WELCOME BACK</p>
-              <div className="w-8 h-[1px] bg-brand-gold/50" />
+            <div className="inline-flex items-center gap-3 mb-6 opacity-80">
+              <div className="w-8 h-[1px] bg-brand-purple/50" />
+              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.3em] text-brand-purple">WELCOME BACK</p>
+              <div className="w-8 h-[1px] bg-brand-purple/50" />
             </div>
             
-            <h1 className="text-display-md mb-3 tracking-tighter">
+            <h1 className="text-display-md mb-3 tracking-tighter text-text-primary">
               Sign In to <br />
-              <span className="italic font-display gold-text-gradient">Spinny</span><span className="text-brand-gold">.</span>
+              <span className="italic font-display text-brand-purple">Spinny</span><span className="text-brand-purple">.</span>
             </h1>
             <p className="text-text-muted text-base tracking-wide opacity-70">
               Access your account to manage shortlists and bookings.
@@ -76,20 +76,20 @@ export default function LoginPage() {
           </div>
 
           {/* Tabs */}
-          <div className="flex glass rounded-full p-1.5 mb-10 border-white/5 relative">
+          <div className="flex bg-bg-main border border-border rounded-full p-1.5 mb-10 relative">
             <div 
-              className="absolute top-1.5 bottom-1.5 bg-brand-gold rounded-full transition-all duration-700 ease-luxury shadow-[0_0_20px_rgba(197,160,89,0.4)]"
+              className="absolute top-1.5 bottom-1.5 bg-brand-purple rounded-full transition-all duration-700 ease-luxury shadow-[0_0_15px_rgba(91,45,134,0.3)]"
               style={{ left: activeTab === 'login' ? '6px' : 'calc(50% + 2px)', width: 'calc(50% - 8px)' }} 
             />
             <button 
               onClick={() => handleTabSwitch('login')} 
-              className={`relative z-10 flex-1 py-3 text-[13px] md:text-sm font-bold uppercase tracking-[0.2em] rounded-full transition-colors duration-500 ${activeTab === 'login' ? 'text-bg-primary' : 'text-text-muted hover:text-text-primary'}`}
+              className={`relative z-10 flex-1 py-3 text-[13px] md:text-sm font-bold uppercase tracking-[0.2em] rounded-full transition-colors duration-500 ${activeTab === 'login' ? 'text-white' : 'text-text-muted hover:text-text-primary'}`}
             >
               Login
             </button>
             <button 
               onClick={() => handleTabSwitch('register')} 
-              className={`relative z-10 flex-1 py-3 text-[13px] md:text-sm font-bold uppercase tracking-[0.2em] rounded-full transition-colors duration-500 ${activeTab === 'register' ? 'text-bg-primary' : 'text-text-muted hover:text-text-primary'}`}
+              className={`relative z-10 flex-1 py-3 text-[13px] md:text-sm font-bold uppercase tracking-[0.2em] rounded-full transition-colors duration-500 ${activeTab === 'register' ? 'text-white' : 'text-text-muted hover:text-text-primary'}`}
             >
               Register
             </button>
@@ -104,7 +104,7 @@ export default function LoginPage() {
                   value={name} 
                   onChange={(e) => setName(e.target.value)} 
                   placeholder="Enter your full name"
-                  className="w-full bg-white/[0.04] border border-white/8 rounded-xl px-5 py-4 text-base text-text-primary focus:border-brand-gold/40 focus:bg-white/[0.06] focus:outline-none transition-all placeholder:text-text-subtle/60" 
+                  className="w-full bg-transparent border border-border rounded-xl px-5 py-4 text-base text-text-primary focus:border-brand-purple focus:bg-white focus:outline-none transition-all placeholder:text-text-subtle/60" 
                 />
               </div>
             )}
@@ -112,14 +112,14 @@ export default function LoginPage() {
             <div>
               <label className="text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-text-muted/80 mb-3 block">Phone Number</label>
               <div className="flex gap-3">
-                <div className="flex items-center px-4 bg-white/[0.04] border border-white/8 rounded-xl text-base text-brand-gold font-mono">+91</div>
+                <div className="flex items-center px-4 bg-bg-main border border-border rounded-xl text-base text-brand-purple font-mono">+91</div>
                 <input 
                   type="tel" 
                   value={phone} 
                   onChange={(e) => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))} 
                   placeholder="Enter 10-digit mobile number" 
                   maxLength={10}
-                  className="flex-1 bg-white/[0.04] border border-white/8 rounded-xl px-5 py-4 text-base text-text-primary focus:border-brand-gold/40 focus:bg-white/[0.06] focus:outline-none transition-all placeholder:text-text-subtle/60" 
+                  className="flex-1 bg-transparent border border-border rounded-xl px-5 py-4 text-base text-text-primary focus:border-brand-purple focus:bg-white focus:outline-none transition-all placeholder:text-text-subtle/60" 
                 />
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function LoginPage() {
             {!otpSent ? (
               <button 
                 onClick={handleSendOtp} 
-                className="w-full py-5 bg-brand-gold text-bg-primary font-bold text-sm md:text-base uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_50px_rgba(197,160,89,0.5)] transition-all duration-700 ease-luxury transform hover:scale-[1.02] active:scale-[0.98] mt-2"
+                className="w-full py-5 bg-brand-purple text-white font-bold text-sm md:text-base uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_30px_rgba(91,45,134,0.3)] transition-all duration-700 ease-luxury transform hover:scale-[1.02] active:scale-[0.98] mt-2"
               >
                 Send OTP
               </button>
@@ -146,12 +146,12 @@ export default function LoginPage() {
                       value={digit}
                       onChange={(e) => handleOtpChange(i, e.target.value)} 
                       onKeyDown={(e) => handleOtpKeyDown(i, e)}
-                      className="w-13 h-16 bg-white/[0.04] border border-white/8 rounded-xl text-center text-xl text-text-primary focus:border-brand-gold focus:bg-white/[0.06] focus:outline-none font-mono transition-all" 
+                      className="w-13 h-16 bg-bg-main border border-border rounded-xl text-center text-xl text-text-primary focus:border-brand-purple focus:bg-white focus:outline-none font-mono transition-all" 
                     />
                   ))}
                 </div>
-                <div className="pt-6 border-t border-white/5 text-center">
-                  <p className="text-base text-text-muted">Demo OTP: <span className="text-brand-gold font-mono font-bold">123456</span></p>
+                <div className="pt-6 border-t border-border text-center">
+                  <p className="text-base text-text-muted">Demo OTP: <span className="text-brand-purple font-mono font-bold">123456</span></p>
                 </div>
               </div>
             )}

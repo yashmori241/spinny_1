@@ -1,27 +1,24 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #050505;
-  --color-bg-surface: #0A0A0A;
-  --color-bg-surface2: #121212;
-  --color-bg-elevated: #1A1A1A;
-  --color-brand-gold: #C5A059;
-  --color-brand-gold-light: #E8D5A3;
-  --color-brand-gold-muted: rgba(197, 160, 89, 0.1);
-  --color-brand-red: #9B1C1C;
-  --color-text-primary: #FDFDFD;
-  --color-text-muted: #8E8E8E;
-  --color-text-subtle: #4A4A4A;
-  --color-border-default: rgba(255, 255, 255, 0.05);
-  --color-border-gold: rgba(197, 160, 89, 0.2);
+  --color-bg-primary: var(--bg-main);
+  --color-bg-surface: var(--bg-alt);
+  --color-bg-elevated: var(--bg-soft);
 
-  /* Purple brand palette */
-  --color-brand-purple: #5B2D86;
-  --color-brand-purple-deep: #3D1A6E;
-  --color-brand-purple-mid: #7B4FAB;
-  --color-brand-purple-light: #A87ED4;
-  --color-brand-purple-wash: #F0ECF7;
-  --color-brand-purple-tint: rgba(91, 45, 134, 0.12);
+  --color-brand-purple: var(--purple);
+  --color-brand-purple-deep: var(--purple-dark);
+  --color-brand-purple-light: var(--purple-light);
+
+  --color-brand-gold: var(--yellow);
+  --color-brand-gold-light: var(--yellow-light);
+  --color-brand-gold-muted: rgba(255, 193, 7, 0.1);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-secondary);
+  --color-text-subtle: rgba(107, 107, 107, 0.6);
+
+  --color-border-default: var(--border);
+  --color-border-gold: rgba(255, 193, 7, 0.2);
 
   /* Animations */
   --animate-ticker: ticker 32s linear infinite;
@@ -39,11 +36,23 @@
   --font-display: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'Cutive Mono', monospace;
-  --color-gold: #C5A059;
-  --color-gold-light: #E8D5A3;
-  --color-bg: #050505;
-  --color-surface: #0A000A;
-  --color-text: #FDFDFD;
+  
+  /* CORE LIGHT MODE SYSTEM */
+  --purple: #5B2D86;
+  --purple-dark: #3D1A6E;
+  --purple-light: #7B4FAB;
+
+  --yellow: #FFC107;
+  --yellow-light: #FFE082;
+
+  --bg-main: #FFFFFF;
+  --bg-alt: #F7F7FB;
+  --bg-soft: #F0ECF7;
+
+  --text-primary: #1C1C1C;
+  --text-secondary: #6B6B6B;
+  --border: #E8E8E8;
+
   --ease-luxury: cubic-bezier(0.2, 0, 0, 1);
   --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
 
@@ -55,11 +64,23 @@
   --feature-gap: clamp(24px, 3vw, 40px);
   --step-gap: clamp(32px, 4vw, 56px);
   --testimonial-gap: clamp(24px, 3vw, 36px);
+}
 
-  /* Purple */
+html.dark {
   --purple: #5B2D86;
-  --purple-deep: #3D1A6E;
-  --purple-mid: #7B4FAB;
+  --purple-dark: #3D1A6E;
+  --purple-light: #7B4FAB;
+
+  --yellow: #FFC107;
+  --yellow-light: #FFE082;
+
+  --bg-main: #0F0F14;
+  --bg-alt: #16161D;
+  --bg-soft: #1E1E2A;
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #B0B0B0;
+  --border: rgba(255,255,255,0.1);
 }
 
 /* ========= BASE RESETS ========= */
@@ -79,8 +100,8 @@ html {
 
 body {
   font-family: var(--font-body);
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--bg-main);
+  color: var(--text-primary);
   overflow-x: hidden;
   position: relative;
   line-height: 1.6;

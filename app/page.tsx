@@ -48,7 +48,7 @@ function HeroSection() {
           style={{ zIndex: 0 }}
         >
           <source
-            src="https://cdn.coverr.co/videos/coverr-driving-through-the-city-at-night-1510/mp4"
+            src="/hero_section.mp4"
             type="video/mp4"
           />
         </video>
@@ -58,8 +58,8 @@ function HeroSection() {
       {videoError && (
         <div className="absolute inset-0 w-full h-[140%] -top-[20%] overflow-hidden" style={{ zIndex: 0 }}>
           <Image
-            src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1920&q=80"
-            alt="Premium dark car on dramatic background"
+            src="https://images.unsplash.com/photo-1549399542-7e3f8b79c341?w=1920&q=80"
+            alt="Family car on a scenic road"
             fill
             priority
             sizes="100vw"
@@ -72,7 +72,7 @@ function HeroSection() {
       <div
         className="absolute inset-0"
         style={{
-          background: 'linear-gradient(to bottom, rgba(20,10,40,0.55) 0%, rgba(61,26,110,0.4) 50%, rgba(0,0,0,0.70) 100%)',
+          background: 'linear-gradient(to bottom, rgba(91,45,134,0.25), rgba(91,45,134,0.15), rgba(255,255,255,0.25))',
           zIndex: 1,
         }}
       />
@@ -255,12 +255,12 @@ function TrustNumbers() {
                 className="font-display font-black tracking-tighter mb-2"
                 style={{ fontSize: 'clamp(40px, 5vw, 64px)', lineHeight: 1 }}
               >
-                <span className="purple-text-gradient">
+                <span className="bg-gradient-to-r from-brand-purple to-brand-gold bg-clip-text text-transparent">
                   <CountUp to={stat.number} suffix={stat.suffix} duration={2} />
                 </span>
               </div>
               <p
-                className="font-semibold text-text-muted uppercase group-hover:text-brand-gold transition-colors duration-700"
+                className="font-semibold text-text-muted hover:text-brand-gold transition-colors duration-700"
                 style={{ fontSize: 'clamp(13px, 1.2vw, 15px)', letterSpacing: '0.06em', marginTop: 8 }}
               >
                 {stat.label}
@@ -381,7 +381,7 @@ function FeaturedCars() {
 
   return (
     <section
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-bg-soft"
       style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
     >
       {/* Ambient purple glow */}
@@ -621,32 +621,32 @@ function Testimonials() {
 /* ===================== BRAND GRID ===================== */
 function BrandGrid() {
   const brandData = [
-    { name: 'Maruti Suzuki', short: 'Maruti Suzuki', monogram: 'S' },
-    { name: 'Hyundai', short: 'Hyundai', monogram: 'H' },
-    { name: 'Tata', short: 'Tata Motors', monogram: 'T' },
-    { name: 'Honda', short: 'Honda', monogram: 'H' },
-    { name: 'Toyota', short: 'Toyota', monogram: 'T' },
-    { name: 'Mahindra', short: 'Mahindra', monogram: 'M' },
-    { name: 'Ford', short: 'Ford', monogram: 'F' },
-    { name: 'Kia', short: 'Kia', monogram: 'K' },
-    { name: 'Volkswagen', short: 'Volkswagen', monogram: 'VW' },
-    { name: 'Skoda', short: 'Škoda', monogram: 'Š' },
-    { name: 'Renault', short: 'Renault', monogram: 'R' },
-    { name: 'BMW', short: 'BMW', monogram: 'BMW' },
-    { name: 'Audi', short: 'Audi', monogram: 'A' },
-    { name: 'Jeep', short: 'Jeep', monogram: 'J' },
-    { name: 'MG', short: 'MG Motor', monogram: 'MG' },
+    { name: 'Maruti Suzuki', short: 'Maruti Suzuki', logo: '/suzuki-logo.png', monogram: 'S' },
+    { name: 'Hyundai', short: 'Hyundai', logo: '/hyundai-logo.png', monogram: 'H' },
+    { name: 'Tata', short: 'Tata Motors', logo: '/tata-logo.png', monogram: 'T' },
+    { name: 'Honda', short: 'Honda', logo: '/honda-logo.png', monogram: 'H' },
+    { name: 'Toyota', short: 'Toyota', logo: '/toyota-logo.png', monogram: 'T' },
+    { name: 'Mahindra', short: 'Mahindra', logo: '/Mahindra-logo.png', monogram: 'M' },
+    { name: 'Ford', short: 'Ford', logo: '/ford-logo.png', monogram: 'F' },
+    { name: 'Kia', short: 'Kia', logo: '/kia-logo.png', monogram: 'K' },
+    { name: 'Volkswagen', short: 'Volkswagen', logo: '/volkswagen-logo.png', monogram: 'VW' },
+    { name: 'Skoda', short: 'Škoda', logo: '/skoda-logo.png', monogram: 'Š' },
+    { name: 'Renault', short: 'Renault', logo: '/renault-logo.png', monogram: 'R' },
+    { name: 'BMW', short: 'BMW', logo: '/bmw-logo.png', monogram: 'BMW' },
+    { name: 'Audi', short: 'Audi', logo: '/audi-logo.png', monogram: 'A' },
+    { name: 'Jeep', short: 'Jeep', logo: '/jeep-logo.png', monogram: 'J' },
+    { name: 'MG', short: 'MG Motor', logo: '/mg-logo.png', monogram: 'MG' },
   ];
 
   return (
     <section
-      className="bg-[#080808] border-y border-white/5"
+      className="bg-bg-alt border-y border-border"
       style={{ padding: 'clamp(64px, 8vw, 112px) 0' }}
     >
       <div className="max-w-[1280px] mx-auto" style={{ padding: '0 clamp(20px, 5vw, 80px)' }}>
         <SectionReveal>
           <div className="text-center" style={{ marginBottom: 'clamp(40px, 5vw, 64px)' }}>
-            <p className="eyebrow text-brand-gold mb-4">POPULAR BRANDS</p>
+            <p className="eyebrow text-brand-purple mb-4">POPULAR BRANDS</p>
             <h2 className="text-display-lg tracking-tighter">Explore by Brand.</h2>
           </div>
         </SectionReveal>
@@ -659,33 +659,21 @@ function BrandGrid() {
             <SectionReveal key={brand.name} delay={i * 0.03}>
               <Link href={`/browse?brand=${encodeURIComponent(brand.name)}`}>
                 <div
-                  className="glass-elite rounded-[20px] text-center transition-all duration-500 group relative overflow-hidden cursor-pointer"
-                  style={{ padding: 'clamp(20px, 2.5vw, 28px)', borderRadius: 16 }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.background = 'rgba(91,45,134,0.85)';
-                    el.style.transform = 'scale(1.06)';
-                    el.style.boxShadow = '0 8px 24px rgba(91,45,134,0.2)';
-                    el.style.color = '#fff';
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget as HTMLElement;
-                    el.style.background = '';
-                    el.style.transform = 'scale(1)';
-                    el.style.boxShadow = '';
-                    el.style.color = '';
-                  }}
+                  className="bg-bg-main border border-border rounded-[16px] text-center transition-all duration-300 group relative overflow-hidden cursor-pointer hover:shadow-[0_8px_30px_rgba(91,45,134,0.1)] hover:-translate-y-1"
+                  style={{ padding: 'clamp(20px, 2.5vw, 28px)' }}
                 >
-                  {/* Letter circle */}
-                  <div
-                    className="mx-auto mb-3 rounded-2xl flex items-center justify-center relative z-10 transition-colors duration-500"
-                    style={{ width: 48, height: 48, marginBottom: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
-                  >
-                    <span className={`font-display font-black gold-text-gradient tracking-tight ${brand.monogram.length > 2 ? 'text-base' : brand.monogram.length > 1 ? 'text-xl' : 'text-2xl'}`}>
-                      {brand.monogram}
-                    </span>
+                  <div className="mx-auto mb-3 flex items-center justify-center relative z-10 transition-transform duration-300 group-hover:scale-105">
+                    {brand.logo ? (
+                      <div className="w-16 h-16 bg-white p-3 rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
+                        <Image src={brand.logo} alt={brand.name} width={48} height={48} className="object-contain" />
+                      </div>
+                    ) : (
+                      <div className="w-16 h-16 bg-white p-3 rounded-xl flex items-center justify-center border border-gray-100 shadow-sm text-brand-purple font-display font-bold text-2xl">
+                        {brand.monogram}
+                      </div>
+                    )}
                   </div>
-                  <p className="text-sm font-semibold tracking-wide text-text-muted group-hover:text-white transition-colors duration-500 relative z-10" style={{ marginTop: 8, fontSize: 13 }}>
+                  <p className="text-sm font-semibold tracking-wide text-text-primary group-hover:text-brand-purple transition-colors duration-300 relative z-10 mt-3" style={{ fontSize: 13 }}>
                     {brand.short}
                   </p>
                 </div>
@@ -705,9 +693,8 @@ function CTASection() {
       className="relative overflow-hidden"
       style={{ padding: 'clamp(80px, 10vw, 140px) 0' }}
     >
-      {/* Purple gradient background */}
       <div
-        className="absolute inset-0 cta-purple-section"
+        className="absolute inset-0 bg-brand-purple"
         style={{ zIndex: 0 }}
       />
       {/* Animated glow overlay */}

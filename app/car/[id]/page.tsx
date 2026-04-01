@@ -60,7 +60,7 @@ export default function CarDetailPage() {
 
   if (!car) {
     return (
-      <div className="min-h-screen bg-bg-primary flex items-center justify-center">
+      <div className="min-h-screen bg-bg-main flex items-center justify-center">
         <div className="text-center">
           <p className="text-display-md text-text-subtle mb-4">Car not found</p>
           <Link href="/browse" className="text-brand-gold hover:underline text-lg">Back to Browse</Link>
@@ -103,8 +103,8 @@ export default function CarDetailPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg-primary relative overflow-hidden" style={{ paddingTop: 80 }}>
-      <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-brand-gold/[0.02] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+    <div className="min-h-screen bg-bg-main relative overflow-hidden" style={{ paddingTop: 80 }}>
+      <div className="absolute top-0 right-0 w-[1000px] h-[1000px] bg-brand-purple/[0.02] blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
       
       <div
         className="max-w-[1280px] mx-auto"
@@ -179,7 +179,7 @@ export default function CarDetailPage() {
                     key={i}
                     onClick={() => handleThumbnailClick(i)}
                     className={`relative w-24 h-16 rounded-xl overflow-hidden flex-shrink-0 border transition-all duration-500
-                      ${i === currentImage ? 'border-brand-gold shadow-[0_0_15px_rgba(197,160,89,0.3)]' : 'border-white/5 opacity-40 hover:opacity-100'}`}
+                      ${i === currentImage ? 'border-brand-purple shadow-[0_0_15px_rgba(91,45,134,0.3)]' : 'border-border opacity-40 hover:opacity-100'}`}
                   >
                     <Image src={img} alt={`View ${i + 1}`} fill sizes="100px" className="object-cover" />
                   </button>
@@ -195,11 +195,11 @@ export default function CarDetailPage() {
                     key={tab}
                     onClick={() => setActiveTab(tab.toLowerCase())}
                     className={`pb-5 text-[12px] font-bold uppercase tracking-[0.2em] transition-all duration-500 relative
-                      ${activeTab === tab.toLowerCase() ? 'text-brand-gold' : 'text-text-muted/60 hover:text-white'}`}
+                      ${activeTab === tab.toLowerCase() ? 'text-brand-purple' : 'text-text-muted/60 hover:text-text-primary'}`}
                   >
                     {tab}
                     {activeTab === tab.toLowerCase() && (
-                      <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-brand-gold" />
+                      <span className="absolute bottom-[-1px] left-0 right-0 h-[1px] bg-brand-purple" />
                     )}
                   </button>
                 ))}
@@ -216,11 +216,11 @@ export default function CarDetailPage() {
                   {specs.map((s) => (
                     <div
                       key={s.label}
-                      className="spec-card group hover:bg-white/[0.02] transition-all duration-500"
+                      className="spec-card group hover:bg-white/[0.02] transition-all duration-500 bg-bg-soft rounded-xl p-4"
                       onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 20px rgba(91,45,134,0.15)'; }}
                       onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.boxShadow = ''; }}
                     >
-                      <div className="flex items-center gap-2 text-brand-gold/40 group-hover:text-brand-gold transition-colors">
+                      <div className="flex items-center gap-2 text-brand-purple/40 group-hover:text-brand-purple transition-colors">
                         {s.icon}
                         <span className="text-[11px] font-semibold uppercase tracking-[0.2em]">{s.label}</span>
                       </div>
@@ -250,8 +250,8 @@ export default function CarDetailPage() {
               {activeTab === 'features' && (
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 animate-in fade-in duration-700">
                   {car.features.map((f) => (
-                    <div key={f} className="flex items-center gap-3 p-4 glass-elite rounded-xl text-sm text-text-muted/80 font-medium">
-                      <div className="w-1.5 h-1.5 rounded-full bg-brand-gold/50 shadow-[0_0_6px_rgba(197,160,89,0.3)]" />
+                    <div key={f} className="flex items-center gap-3 p-4 bg-bg-soft rounded-xl text-sm text-text-muted/80 font-medium">
+                      <div className="w-1.5 h-1.5 rounded-full bg-brand-purple/50 shadow-[0_0_6px_rgba(91,45,134,0.3)]" />
                       {f}
                     </div>
                   ))}
@@ -298,8 +298,8 @@ export default function CarDetailPage() {
               
               <div className="max-w-3xl">
                 <div className="flex items-center gap-4 mb-10">
-                   <div className="w-12 h-[1px] bg-brand-gold/30" />
-                   <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">EMI CALCULATOR</p>
+                   <div className="w-12 h-[1px] bg-brand-purple/30" />
+                   <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-purple">EMI CALCULATOR</p>
                 </div>
                 
                 <div className="space-y-10 relative z-10">
@@ -331,12 +331,12 @@ export default function CarDetailPage() {
                     </div>
                   </div>
                   
-                  <div className="pt-10 border-t border-white/5 flex flex-col md:flex-row md:items-end justify-between gap-8">
+                  <div className="pt-10 border-t border-border flex flex-col md:flex-row md:items-end justify-between gap-8">
                     <div>
                       <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-text-muted/60 mb-3">Monthly EMI</p>
-                      <p className="text-5xl font-display font-black gold-text-gradient tracking-tighter">{formatEMI(emi)}</p>
+                      <p className="text-5xl font-display font-black text-brand-gold tracking-tighter">{formatEMI(emi)}</p>
                     </div>
-                    <button className="px-10 py-5 bg-brand-gold text-bg-primary text-[12px] font-bold uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_40px_rgba(197,160,89,0.4)] transition-all duration-700">
+                    <button className="px-10 py-5 bg-brand-purple text-white text-[12px] font-bold uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_30px_rgba(91,45,134,0.3)] transition-all duration-700">
                       Apply for Loan
                     </button>
                   </div>
@@ -355,8 +355,8 @@ export default function CarDetailPage() {
               >
                 <SectionReveal>
                   <div className="flex items-center gap-4 mb-8">
-                     <div className="w-12 h-[1px] bg-brand-gold/30" />
-                     <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-gold">SIMILAR CARS</h3>
+                     <div className="w-12 h-[1px] bg-brand-purple/30" />
+                     <h3 className="text-[11px] font-bold uppercase tracking-[0.3em] text-brand-purple">SIMILAR CARS</h3>
                   </div>
                   <div
                     className="grid grid-cols-1 sm:grid-cols-2"
@@ -373,8 +373,8 @@ export default function CarDetailPage() {
 
           {/* Right: Sticky Price Card */}
           <div className="lg:w-[400px] flex-shrink-0">
-            <div className="sticky top-[100px] glass-elite luxury-border rounded-[28px] p-8 lg:p-10 shadow-[0_40px_100px_rgba(0,0,0,0.8)] relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-gold/[0.05] blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="sticky top-[100px] bg-bg-main border border-border rounded-[28px] p-8 lg:p-10 shadow-[0_4px_30px_rgba(91,45,134,0.05)] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-brand-purple/[0.05] blur-[100px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
               
               <div className="flex items-start justify-between mb-8 relative z-10">
                 <div className="max-w-[80%]">
@@ -413,20 +413,20 @@ export default function CarDetailPage() {
               </div>
 
               <div className="space-y-3 relative z-10">
-                <button className="w-full py-5 bg-brand-gold text-bg-primary font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_40px_rgba(197,160,89,0.5)] transition-all duration-700">
+                <button className="w-full py-5 bg-brand-purple text-white font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:shadow-[0_0_30px_rgba(91,45,134,0.3)] transition-all duration-700">
                   Book This Car
                 </button>
-                <button className="w-full py-5 glass-elite luxury-border text-white font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:bg-white/[0.05] transition-all duration-700">
+                <button className="w-full py-5 bg-bg-soft border border-border text-text-primary font-bold text-[12px] uppercase tracking-[0.2em] rounded-full hover:border-brand-purple/30 transition-all duration-700">
                   Schedule Test Drive
                 </button>
               </div>
 
-              <div className="mt-8 pt-8 border-t border-white/5 relative z-10">
+              <div className="mt-8 pt-8 border-t border-border relative z-10">
                 <div className="flex items-center gap-3 mb-3">
                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                    <p className="text-[11px] font-semibold text-text-muted">Available for immediate delivery</p>
                 </div>
-                <button className="w-full py-4 bg-white/[0.02] border border-white/5 rounded-xl text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted hover:text-white hover:border-brand-gold/20 transition-all duration-500">
+                <button className="w-full py-4 bg-transparent border border-border rounded-xl text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted hover:text-text-primary hover:border-brand-purple/50 transition-all duration-500">
                   Contact Us About This Car
                 </button>
               </div>
@@ -475,7 +475,7 @@ export default function CarDetailPage() {
               <button
                 key={i}
                 onClick={() => setCurrentImage(i)}
-                className={`transition-all duration-500 rounded-full ${i === currentImage ? 'bg-brand-gold w-12 h-1' : 'bg-white/10 w-4 h-1'}`}
+                className={`transition-all duration-500 rounded-full ${i === currentImage ? 'bg-brand-purple w-12 h-1' : 'bg-white/30 w-4 h-1'}`}
               />
             ))}
           </div>
